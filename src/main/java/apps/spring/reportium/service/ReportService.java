@@ -1,0 +1,20 @@
+package apps.spring.reportium.service;
+
+import apps.spring.reportium.entity.DTOs.AcademicReportPerPersonDTO;
+import apps.spring.reportium.entity.DTOs.CrimeReportPerPersonDTO;
+import apps.spring.reportium.entity.DTOs.EmploymentReportPerPersonDTO;
+import apps.spring.reportium.entity.DTOs.MedicalReportPerPersonDTO;
+import apps.spring.reportium.entity.Report;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
+public interface ReportService {
+    List<Report> findAll();
+    List<AcademicReportPerPersonDTO> getAcademicReports(Long personId);
+    List<MedicalReportPerPersonDTO> getMedicalReports(Long personId);
+    List<EmploymentReportPerPersonDTO> getEmploymentReports(Long personId);
+    List<CrimeReportPerPersonDTO> getCriminalReports(Long personId);
+//    Page<Report> findPage(Integer reportId, Integer pageNum, Integer pageSize);
+    Page<Report> findPaginatedReports(int page, int size, String sortField, String sortDir);
+}
