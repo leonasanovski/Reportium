@@ -1,9 +1,6 @@
 package apps.spring.reportium.service.impl;
 
-import apps.spring.reportium.entity.DTOs.AcademicReportPerPersonDTO;
-import apps.spring.reportium.entity.DTOs.CrimeReportPerPersonDTO;
-import apps.spring.reportium.entity.DTOs.EmploymentReportPerPersonDTO;
-import apps.spring.reportium.entity.DTOs.MedicalReportPerPersonDTO;
+import apps.spring.reportium.entity.DTOs.*;
 import apps.spring.reportium.entity.Report;
 import apps.spring.reportium.repository.ReportRepository;
 import apps.spring.reportium.service.ReportService;
@@ -56,5 +53,15 @@ public class ReportServiceImplementation implements ReportService {
 
         Pageable pageable = PageRequest.of(safePage, size, sort);
         return reportRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Report> getReportsByTypeViews(List<String> reportTypes) {
+        return List.of();
+    }
+
+    @Override
+    public List<Report> getReportsByAdvancedFilter(ReportFilterDTO filter) {
+        return List.of();
     }
 }

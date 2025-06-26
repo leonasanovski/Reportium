@@ -33,7 +33,7 @@ public class ReportsController {
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-
         return "reports";
     }
+
 }
