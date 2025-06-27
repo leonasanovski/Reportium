@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Person Filter Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body style="background: linear-gradient(to bottom, #002195, #b39f24); min-height: 100vh;">
+<div class="container my-4 p-4 rounded shadow h-100" style="background-color: #f4f4f4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold px-3 py-2 rounded-2 text-white"
+               th:href="@{/}"
+               style="background: linear-gradient(to right, #003366, #004080);
+          border-left: 5px solid #FFD700;
+          font-size: 1.5rem;
+          box-shadow: 0 0 5px rgba(0,0,0,0.2);
+          letter-spacing: 1px;">
+                <span style="color: #FFD700;">R</span>eportium
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarContent" aria-controls="navbarContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/reports}">All Reports</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link text-info" th:href="@{/profiles}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" th:href="@{/logout}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <form th:action="@{/advanced_filter}" method="post" th:object="${filter}">
+        <h3 class="text-center px-4 py-3 bg-dark text-white fw-bolder rounded">Advanced Filtering Page</h3>
+        <hr class="my-4 border-dark">
+        <h4 class="fw-bold mb-3">Person</h4>
+        <!-- Full Name -->
+        <div class="mb-4">
+            <label for="person_name_surname_string" class="form-label fw-bold">Full Name</label>
+            <input id="person_name_surname_string" type="text" name="person_name_surname_string"
+                   class="form-control"
+                   th:field="*{person_name_surname_string}" placeholder="Enter name and surname">
+        </div>
+        <!-- Age Part -->
+        <div class="row mb-4 d-flex justify-content-center">
+            <!-- Age Range -->
+            <div class="col-9">
+                <label class="form-label fw-bold">Age Range</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="age_start" class="form-label">Start Age</label>
+                        <input type="range" class="form-range" min="0" max="120" value="0" name="age_start"
+                               th:field="*{age_start}" id="age_start"
+                               oninput="updateAgeRange()">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="age_end" class="form-label d-flex justify-content-end">End Age</label>
+                        <input type="range" class="form-range" min="0" max="120" value="120" id="age_end"
+                               name="age_end"
+                               th:field="*{age_end}" oninput="updateAgeRange()">
+                    </div>
+                </div>
+            </div>
+            <!-- Correct Age -->
+            <div class="col-3 d-flex flex-column justify-content-center align-items-center">
+                <label for="correct_age" class="form-label fw-bold text-center">Correct Age</label>
+                <input type="number" id="correct_age" class="form-control text-center" name="correct_age"
+                       style="width: 80px;" min="0"
+                       max="120" value="0"
+                       th:field="*{correct_age}" oninput="updateAgeRange()">
+            </div>
+        </div>
+        <div class="alert alert-info py-2 text-center mt-2 w-25 m-auto" role="alert">
+            <strong><span id="ageRangeDisplay">0 - 120</span></strong>
+        </div>
+        <!-- Gender -->
+        <div class="mb-4">
+            <label class="form-label fw-bold">Gender</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" th:field="*{gender}" id="male" value="MALE">
+                <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" th:field="*{gender}" id="female" value="FEMALE">
+                <label class="form-check-label" for="female">Female</label>
+            </div>
+        </div>
+        <!-- Address -->
+        <div class="mb-4">
+            <label for="address_string" class="form-label fw-bold">Address</label>
+            <input type="text" id="address_string" name="address_string" class="form-control"
+                   th:field="*{address_string}" placeholder="Enter address">
+        </div>
+        <!-- Is Alive -->
+        <div class="mb-4 form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   th:field="*{is_alive}"
+                   id="is_alive">
+            <label class="form-check-label fw-bold" for="is_alive">
+                Is Alive
+            </label>
+        </div>
+
+        <hr class="my-4">
+        <div class="row d-flex">
+            <!-- Academic Report -->
+            <div class="col-6 border-end border-secondary-subtle">
+                <h4 class="fw-bold mb-3">Academic Report</h4>
+                <div class="mb-4">
+                    <label for="academic_field" class="form-label fw-bold">Field of Study</label>
+                    <input type="text" id="academic_field" class="form-control"
+                           placeholder="e.g. Computer Science, Biology..." th:field="*{academic_field}">
+                </div>
+                <div class="mb-4">
+                    <label for="institution_type">Institution type</label>
+                    <select class="form-select" id="institution_type" name="institution_type"
+                            th:field="*{institution_type}">
+                        <option value="" th:text="'Choose'"></option>
+                        <option th:each="inst : ${institutions}"
+                                th:value="${inst}"
+                                th:text="${inst}"></option>
+                    </select>
+                </div>
+            </div>
+            <!-- Employment Report -->
+            <div class="col-6">
+                <h4 class="fw-bold mb-3">Employment Report</h4>
+                <div class="row mb-4 align-items-end">
+                    <div class="col-md-4">
+                        <label for="income_comparison">Income Comparison</label>
+                        <select class="form-select" id="income_comparison" name="income_comparison"
+                                th:field="*{income_comparison}">
+                            <option value="" th:text="'Choose'"></option>
+                            <option th:each="comp : ${comparisons}"
+                                    th:value="${comp}"
+                                    th:text="${comp}"></option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-4">
+                        <label for="income_amount" class="form-label fw-bold">Income</label>
+                        <input type="number" class="form-control" name="income_amount" id="income_amount"
+                               min="0" th:field="*{income_amount}">
+                    </div>
+                    <div class="col-md-4">
+                        <span class="form-control-plaintext">euros</span>
+                    </div>
+                </div>
+                <div class="row mb-4 align-items-end">
+                    <div class="col-md-4">
+                        <label for="years_experience_comparison">Experience Comparison</label>
+                        <select class="form-select" id="years_experience_comparison"
+                                name="years_experience_comparison"
+                                th:field="*{years_experience_comparison}">
+                            <option value="" th:text="'Choose'"></option>
+                            <option th:each="comp : ${comparisons}"
+                                    th:value="${comp}"
+                                    th:text="${comp}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="years_experience" class="form-label fw-bold">Experience</label>
+                        <input type="number" class="form-control" name="years_experience" id="years_experience"
+                               min="0" th:field="*{years_experience}">
+                    </div>
+                    <div class="col-md-4">
+                        <span class="form-control-plaintext">years</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Criminal Report -->
+        <hr class="my-4">
+        <h4 class="fw-bold mb-3">Criminal Report</h4>
+
+        <div class="row mb-4 d-flex">
+            <div class="col-4 border-end border-secondary-subtle">
+                <div class="col">
+                    <label for="crime_severity_level">Severity of Crime</label>
+                    <select class="form-select" id="crime_severity_level" name="crime_severity_level"
+                            th:field="*{crime_severity_level}">
+                        <option value="" th:text="'Choose'"></option>
+                        <option th:each="sev : ${severities}"
+                                th:value="${sev}"
+                                th:text="${sev}"></option>
+                    </select>
+                </div>
+                <!-- Is Resolved -->
+                <div class="col- ms-3 mt-3 mb-4 form-check">
+                    <input class="form-check-input" type="checkbox" name="is_resolved" id="is_resolved"
+                           th:field="*{is_resolved}">
+                    <label class="form-check-label fw-bold" for="is_resolved">Is Resolved</label>
+                </div>
+            </div>
+            <div class="col-4 d-flex justify-content-center border-end border-secondary-subtle">
+                <!-- Punishment Type Radios -->
+                <div class="col-6 mb-3">
+                    <label class="form-label fw-bold">Punishment Type</label>
+                    <!-- Fine Punishment -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{punishment_type}"
+                               id="punishmentFineRadio"
+                               value="FINE" onclick="togglePunishment()">
+                        <label class="form-check-label" for="punishmentFineRadio">Fine (euros)</label>
+                    </div>
+                    <!-- Years Punishment -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{punishment_type}"
+                               id="punishmentYearsRadio"
+                               value="PRISON" onclick="togglePunishment()">
+                        <label class="form-check-label" for="punishmentYearsRadio">Prison (years)</label>
+                    </div>
+                </div>
+
+                <!-- Fine input -->
+                <div class="col-md-6" id="fineInput">
+                    <label for="punishment_fine" class="form-label fw-bold">Punishment Fine (euros)</label>
+                    <input type="number" id="punishment_fine" th:field="*{punishment_fine}" class="form-control"
+                           min="0">
+                </div>
+
+                <!-- Years input -->
+                <div class="col-md-6 d-none" id="yearsInput">
+                    <label for="punishment_years" class="form-label fw-bold">Punishment Duration (years)</label>
+                    <input type="number" id="punishment_years" th:field="*{punishment_years}" class="form-control"
+                           min="0">
+                </div>
+            </div>
+            <div class="col-4">
+                <!-- Criminal Type -->
+                <div class="mb-4">
+                    <label for="crime_type_label" class="form-label fw-bold">Criminal Type</label>
+                    <input type="text" id="crime_type_label" name="crime_type_label"
+                           th:field="*{crime_type_label}" class="form-control"
+                           placeholder="e.g. theft, fraud, etc.">
+                </div>
+            </div>
+        </div>
+        <hr class="my-4">
+        <h4 class="fw-bold mb-3">Medical Report</h4>
+        <!-- Doctor Name + Surname -->
+        <div class="row mb-4">
+            <div class="col-6 d-flex justify-content-around">
+                <div class="col-5">
+                    <label for="doctor_name_string" class="form-label fw-bold">Doctor Name</label>
+                    <input type="text" id="doctor_name_string" name="doctor_name_string" class="form-control"
+                           th:field="*{doctor_name_string}" placeholder="e.g. John">
+                </div>
+                <div class="col-5">
+                    <label for="doctor_surname_string" class="form-label fw-bold">Doctor Surname</label>
+                    <input type="text" id="doctor_surname_string" name="doctor_surname_string" class="form-control"
+                           th:field="*{doctor_surname_string}" placeholder="e.g. Smith">
+                </div>
+            </div>
+            <div class="col-3">
+                <label for="specialization">Severity of Crime</label>
+                <select class="form-select" id="specialization" name="specialization"
+                        th:field="*{specialization}">
+                    <option value="" th:text="'Choose'"></option>
+                    <option th:each="specs : ${specializations}"
+                            th:value="${specs}"
+                            th:text="${specs}"></option>
+                </select>
+            </div>
+            <!-- Still Active + Chronic Illness + Next Medical Control -->
+            <div class="col-md-3 d-flex flex-column gap-3">
+                <div>
+                    <input class="form-check-input" type="checkbox" checked id="is_active"
+                           onchange="toggleActiveBadge()" th:field="*{is_active}" name="is_active">
+                    <label class="form-check-label fw-bold me-2" for="is_active">Is Doctor still Active</label>
+                    <span id="activeBadge" class="badge bg-success text-white">Not Active</span>
+                </div>
+                <div>
+                    <input class="form-check-input" type="checkbox" name="is_chronic"
+                           id="is_chronic" th:field="*{is_chronic}">
+                    <label class="form-check-label fw-bold me-2" for="is_chronic">Is Chronic Illness</label>
+                </div>
+                <div>
+                    <input class="form-check-input" type="checkbox" checked name="has_next_control"
+                           id="has_next_control" th:field="*{has_next_control}">
+                    <label class="form-check-label fw-bold" for="has_next_control">
+                        Has Next Medical Control Scheduled
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4 d-flex justify-content-center">
+            <button type="submit" class="btn btn-outline-primary fw-bolder text-center w-50">Search</button>
+        </div>
+        <div class="d-flex justify-content-center">
+            <a th:href="@{/reports}" class="btn btn-outline-danger w-25 text-center fw-bolder">Cancel Filtering</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleActiveBadge() {
+        const checkbox = document.getElementById("is_active");
+        const badge = document.getElementById("activeBadge");
+
+        if (checkbox.checked) {
+            badge.textContent = "Active";
+            badge.classList.remove("bg-danger");
+            badge.classList.add("bg-success");
+        } else {
+            badge.textContent = "Retired";
+            badge.classList.remove("bg-success");
+            badge.classList.add("bg-danger");
+        }
+    }
+
+    function updateAgeRange() {
+        let start = parseInt(document.getElementById("age_start").value);
+        let end = parseInt(document.getElementById("age_end").value);
+        let correct = parseInt(document.getElementById("correct_age").value);
+        if (start > end) [start, end] = [end, start];
+        let displayText;
+        if (correct > 0) {
+            displayText = `Exact Age: ${correct}`;
+        } else {
+            displayText = `Age range between ${start} and ${end}`;
+        }
+        document.getElementById("ageRangeDisplay").textContent = displayText;
+    }
+
+    function togglePunishment() {
+        const fineInput = document.getElementById("fineInput");
+        const yearsInput = document.getElementById("yearsInput");
+        const isFine = document.getElementById("punishmentFineRadio").checked;
+
+        if (isFine) {
+            fineInput.classList.remove("d-none");
+            yearsInput.classList.add("d-none");
+            document.getElementById("punishment_years").value = "";
+        } else {
+            yearsInput.classList.remove("d-none");
+            fineInput.classList.add("d-none");
+            document.getElementById("punishment_fine").value = "";
+        }
+    }
+
+
+    window.onload = function () {
+        updateAgeRange();
+        togglePunishment();
+        toggleActiveBadge();
+    };
+</script>
+
+</body>
+</html>
