@@ -4,10 +4,12 @@ import apps.spring.reportium.entity.DTOs.*;
 import apps.spring.reportium.entity.Report;
 import apps.spring.reportium.repository.ReportRepository;
 import apps.spring.reportium.service.ReportService;
+import apps.spring.reportium.specifications.ReportFilterSpecificationBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,24 +46,21 @@ public class ReportServiceImplementation implements ReportService {
     public List<CrimeReportPerPersonDTO> getCriminalReports(Long personId) {
         return reportRepository.getCriminalReportsByPersonId(personId);
     }
+
     @Override
     public Page<Report> findPaginatedReports(int page, int size, String sortField, String sortDir) {
-        int safePage = Math.max(0, page - 1);
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortField).ascending().and(Sort.by("reportId").ascending())
+                : Sort.by(sortField).descending().and(Sort.by("reportId").descending());
 
-        Sort sort = sortDir.equalsIgnoreCase("asc") ?
-                Sort.by(sortField).ascending() : Sort.by(sortField).descending();
-
-        Pageable pageable = PageRequest.of(safePage, size, sort);
+        Pageable pageable = PageRequest.of(page, size, sort);
         return reportRepository.findAll(pageable);
-    }
 
-    @Override
-    public List<Report> getReportsByTypeViews(List<String> reportTypes) {
-        return List.of();
     }
 
     @Override
     public List<Report> getReportsByAdvancedFilter(ReportFilterDTO filter) {
-        return List.of();
+        Specification<Report> spec = ReportFilterSpecificationBuilder.build(filter);
+        return reportRepository.findAll(spec); // from JpaSpecificationExecutor
     }
 }

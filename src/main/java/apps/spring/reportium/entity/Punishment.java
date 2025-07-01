@@ -47,8 +47,9 @@ public class Punishment {
     private PunishmentType punishmentType;
 
     @Column(name = "fine_to_pay")
-    private double fineToPay;
+    private Double fineToPay;
 
     @Column(name = "release_date")
     private LocalDate releaseDate;
+
 }

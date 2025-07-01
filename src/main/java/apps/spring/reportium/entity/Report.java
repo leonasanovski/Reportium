@@ -39,4 +39,17 @@ public class Report {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "fk_person_id"))
     private Person person;
+
+    @OneToOne(mappedBy = "report", fetch = FetchType.LAZY)
+    private AcademicReport academicReport;
+
+    @OneToOne(mappedBy = "report", fetch = FetchType.LAZY)
+    private EmploymentReport employmentReport;
+
+    @OneToOne(mappedBy = "report", fetch = FetchType.LAZY)
+    private MedicalReport medicalReport;
+
+    @OneToOne(mappedBy = "report", fetch = FetchType.LAZY)
+    private CriminalReport criminalReport;
+
 }

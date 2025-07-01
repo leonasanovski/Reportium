@@ -30,7 +30,7 @@ public class CriminalReport {
 
     private String location;
 
-    private boolean resolved = false;
+    private Boolean resolved = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "crime_type_id", foreignKey = @ForeignKey(name = "fk_crime_type_id"))
@@ -38,4 +38,8 @@ public class CriminalReport {
 
     @Column(name = "descriptive_punishment", columnDefinition = "TEXT")
     private String descriptivePunishment;
+
+    @OneToOne(mappedBy = "report", fetch = FetchType.LAZY)
+    private Punishment punishment;
+
 }

@@ -21,7 +21,7 @@ public class ReportsController {
     @GetMapping
     public String listReports(Model model,
                               @RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "20") int size,
+                              @RequestParam(defaultValue = "35") int size,
                               @RequestParam(defaultValue = "reportId") String sortField,
                               @RequestParam(defaultValue = "asc") String sortDir) {
         Page<Report> reportPage = reportService.findPaginatedReports(page, size, sortField, sortDir);

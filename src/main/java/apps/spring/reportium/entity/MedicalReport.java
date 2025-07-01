@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /*
 --creating the medical report table
@@ -34,4 +35,8 @@ public class MedicalReport {
 
     @Column(name = "next_control_date")
     private LocalDate nextControlDate;
+
+    @OneToMany(mappedBy = "report")
+    private List<MedicalReportDiagnosis> medicalReportDiagnoses;
+
 }

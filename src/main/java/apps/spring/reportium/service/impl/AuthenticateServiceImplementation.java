@@ -28,14 +28,12 @@ public class AuthenticateServiceImplementation implements AuthenticationService 
     private final ReportiumUserRepository reportiumUserRepository;
     private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
     private final UserProfileLogRepository profileLogRepository;
 
-    public AuthenticateServiceImplementation(ReportiumUserRepository reportiumUserRepository, UserProfileRepository userProfileRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserProfileLogRepository profileLogRepository) {
+    public AuthenticateServiceImplementation(ReportiumUserRepository reportiumUserRepository, UserProfileRepository userProfileRepository, PasswordEncoder passwordEncoder, UserProfileLogRepository profileLogRepository) {
         this.reportiumUserRepository = reportiumUserRepository;
         this.userProfileRepository = userProfileRepository;
         this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
         this.profileLogRepository = profileLogRepository;
     }
 

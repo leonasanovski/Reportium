@@ -208,26 +208,12 @@
     </table>
     <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/reports(page=${currentPage - 1}, size=${reportsPage.size}, sortField=${sortField}, sortDir=${sortDir})}">
-                    Previous
-                </a>
-            </li>
-
             <li class="page-item"
-                th:each="i : ${#numbers.sequence(1, totalPages)}"
-                th:classappend="${i == currentPage} ? (i == 1 ? 'first-page-active' : 'active')">
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? (i == 0 ? ' first-page-active' : ' active') : ''">
                 <a class="page-link"
                    th:href="@{/reports(page=${i}, size=${reportsPage.size}, sortField=${sortField}, sortDir=${sortDir})}"
-                   th:text="${i}">1</a>
-            </li>
-
-            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/reports(page=${currentPage + 1}, size=${reportsPage.size}, sortField=${sortField}, sortDir=${sortDir})}">
-                    Next
-                </a>
+                   th:text="${i + 1}">1</a>
             </li>
         </ul>
     </nav>

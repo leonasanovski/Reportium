@@ -1,13 +1,11 @@
 package apps.spring.reportium.repository;
 
-import apps.spring.reportium.entity.DTOs.AcademicReportPerPersonDTO;
-import apps.spring.reportium.entity.DTOs.CrimeReportPerPersonDTO;
-import apps.spring.reportium.entity.DTOs.EmploymentReportPerPersonDTO;
-import apps.spring.reportium.entity.DTOs.MedicalReportPerPersonDTO;
+import apps.spring.reportium.entity.DTOs.*;
 import apps.spring.reportium.entity.Report;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ReportRepository extends JpaRepository<Report, Long> {
+public interface ReportRepository extends JpaRepository<Report, Long>, JpaSpecificationExecutor<Report> {
 
     @Query(value = """
         SELECT r.report_id, academic_field, description_of_report, i.name, i.type, i.address, i.year_established

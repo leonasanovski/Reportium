@@ -14,7 +14,5 @@ public interface ReportService {
     List<CrimeReportPerPersonDTO> getCriminalReports(Long personId);
 //    Page<Report> findPage(Integer reportId, Integer pageNum, Integer pageSize);
     Page<Report> findPaginatedReports(int page, int size, String sortField, String sortDir);
-
-    List<Report> getReportsByTypeViews(List<String> reportTypes);
     List<Report> getReportsByAdvancedFilter(ReportFilterDTO filter);
 }

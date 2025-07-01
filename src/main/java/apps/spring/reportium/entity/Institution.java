@@ -4,6 +4,7 @@ import apps.spring.reportium.entity.converter.InstitutionTypeConverter;
 import apps.spring.reportium.entity.enumerations.InstitutionType;
 import jakarta.persistence.*;
 import lombok.Data;
+
 /*
 --enumeration - type of institution
 CREATE TYPE institution_type AS ENUM ('Primary School', 'High School', 'University', 'Academy');
@@ -25,7 +26,6 @@ CREATE TABLE Institution (
         uniqueConstraints = @UniqueConstraint(columnNames = {"name", "city"})
 )
 public class Institution {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "institution_id")

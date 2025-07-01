@@ -40,99 +40,127 @@
             </div>
         </div>
     </nav>
-    <form th:action="@{/advanced_filter}" method="post" th:object="${filter}">
-        <h3 class="text-center px-4 py-3 bg-dark text-white fw-bolder rounded">Advanced Filtering Page</h3>
-        <hr class="my-4 border-dark">
-        <h4 class="fw-bold mb-3">Person</h4>
-        <!-- Full Name -->
+
+    <form class="mt-5" th:action="@{/advanced_filter_pt2}" method="post" th:object="${filter}">
         <div class="mb-4">
-            <label for="person_name_surname_string" class="form-label fw-bold">Full Name</label>
-            <input id="person_name_surname_string" type="text" name="person_name_surname_string"
-                   class="form-control"
-                   th:field="*{person_name_surname_string}" placeholder="Enter name and surname">
+            <label for="filter_type">Select a filter type:</label>
+            <select class="form-select" id="filter_type" name="filter_selected" onchange="selectFilterArea()">
+                <option th:each="fil : ${filter_types} "
+                        th:value="${fil}"
+                        th:text="${fil}"></option>
+            </select>
         </div>
-        <!-- Age Part -->
-        <div class="row mb-4 d-flex justify-content-center">
-            <!-- Age Range -->
-            <div class="col-9">
-                <label class="form-label fw-bold">Age Range</label>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="age_start" class="form-label">Start Age</label>
-                        <input type="range" class="form-range" min="0" max="120" value="0" name="age_start"
-                               th:field="*{age_start}" id="age_start"
-                               oninput="updateAgeRange()">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="age_end" class="form-label d-flex justify-content-end">End Age</label>
-                        <input type="range" class="form-range" min="0" max="120" value="120" id="age_end"
-                               name="age_end"
-                               th:field="*{age_end}" oninput="updateAgeRange()">
-                    </div>
+        <div id="person_filter" class="mb-4 d-none">
+            <h3 class="text-center px-4 py-3 bg-dark text-white fw-bolder rounded">Advanced Filtering Page</h3>
+            <hr class="my-4 border-dark">
+            <h4 class="fw-bold mb-3">Person</h4>
+            <!-- Full Name -->
+            <div class="row d-flex justify-content-between">
+                <div class="col-6 mb-4">
+                    <label for="person_name_string" class="form-label fw-bold">Name</label>
+                    <input id="person_name_string" type="text" name="person_name_string"
+                           class="form-control"
+                           th:field="*{person_name_string}" placeholder="Enter name">
+                </div>
+                <div class="col-6 mb-4">
+                    <label for="person_surname_string" class="form-label fw-bold">Surname</label>
+                    <input id="person_surname_string" type="text" name="person_surname_string"
+                           class="form-control"
+                           th:field="*{person_surname_string}" placeholder="Enter surname">
                 </div>
             </div>
-            <!-- Correct Age -->
-            <div class="col-3 d-flex flex-column justify-content-center align-items-center">
-                <label for="correct_age" class="form-label fw-bold text-center">Correct Age</label>
-                <input type="number" id="correct_age" class="form-control text-center" name="correct_age"
-                       style="width: 80px;" min="0"
-                       max="120" value="0"
-                       th:field="*{correct_age}" oninput="updateAgeRange()">
+
+            <!-- Age Part -->
+            <div class="row mb-4 d-flex justify-content-center">
+                <!-- Age Range -->
+                <div class="col-9">
+                    <label class="form-label fw-bold">Age Range</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="age_start" class="form-label">Start Age</label>
+                            <input type="range" class="form-range" min="0" max="120" value="0" name="age_start"
+                                   th:field="*{age_start}" id="age_start"
+                                   oninput="updateAgeRange()">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="age_end" class="form-label d-flex justify-content-end">End Age</label>
+                            <input type="range" class="form-range" min="0" max="120" value="120" id="age_end"
+                                   name="age_end"
+                                   th:field="*{age_end}" oninput="updateAgeRange()">
+                        </div>
+                    </div>
+                </div>
+                <!-- Correct Age -->
+                <div class="col-3 d-flex flex-column justify-content-center align-items-center">
+                    <label for="correct_age" class="form-label fw-bold text-center">Correct Age</label>
+                    <input type="number" id="correct_age" class="form-control text-center" name="correct_age"
+                           style="width: 80px;" min="0"
+                           max="120" value="0"
+                           th:field="*{correct_age}" oninput="updateAgeRange()">
+                </div>
             </div>
-        </div>
-        <div class="alert alert-info py-2 text-center mt-2 w-25 m-auto" role="alert">
-            <strong><span id="ageRangeDisplay">0 - 120</span></strong>
-        </div>
-        <!-- Gender -->
-        <div class="mb-4">
-            <label class="form-label fw-bold">Gender</label>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" th:field="*{gender}" id="male" value="MALE">
-                <label class="form-check-label" for="male">Male</label>
+            <div class="alert alert-info py-2 text-center mt-2 w-25 m-auto" role="alert" id="age_label">
+                <strong><span id="ageRangeDisplay">0 - 120</span></strong>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" th:field="*{gender}" id="female" value="FEMALE">
-                <label class="form-check-label" for="female">Female</label>
+            <!-- Gender -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Gender</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" th:field="*{gender}" checked id="none" value="">
+                    <label class="form-check-label" for="none">Any</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" th:field="*{gender}" id="male" value="MALE">
+                    <label class="form-check-label" for="male">Male</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" th:field="*{gender}" id="female" value="FEMALE">
+                    <label class="form-check-label" for="female">Female</label>
+                </div>
             </div>
-        </div>
-        <!-- Address -->
-        <div class="mb-4">
-            <label for="address_string" class="form-label fw-bold">Address</label>
-            <input type="text" id="address_string" name="address_string" class="form-control"
-                   th:field="*{address_string}" placeholder="Enter address">
-        </div>
-        <!-- Is Alive -->
-        <div class="mb-4 form-check">
-            <input class="form-check-input"
-                   type="checkbox"
-                   th:field="*{is_alive}"
-                   id="is_alive">
-            <label class="form-check-label fw-bold" for="is_alive">
-                Is Alive
-            </label>
+            <!-- Address -->
+            <div class="mb-4">
+                <label for="address_string" class="form-label fw-bold">Address</label>
+                <input type="text" id="address_string" name="address_string" class="form-control"
+                       th:field="*{address_string}" placeholder="Enter address">
+            </div>
+            <!-- Is Alive -->
+            <div class="mb-4 form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       th:field="*{is_alive}"
+                       id="is_alive" onchange="disableAgeFilters()">
+                <label class="form-check-label fw-bold" for="is_alive">
+                    Is Alive
+                </label>
+            </div>
         </div>
 
-        <hr class="my-4">
-        <div class="row d-flex">
-            <!-- Academic Report -->
-            <div class="col-6 border-end border-secondary-subtle">
-                <h4 class="fw-bold mb-3">Academic Report</h4>
-                <div class="mb-4">
-                    <label for="academic_field" class="form-label fw-bold">Field of Study</label>
-                    <input type="text" id="academic_field" class="form-control"
-                           placeholder="e.g. Computer Science, Biology..." th:field="*{academic_field}">
-                </div>
-                <div class="mb-4">
-                    <label for="institution_type">Institution type</label>
-                    <select class="form-select" id="institution_type" name="institution_type"
-                            th:field="*{institution_type}">
-                        <option value="" th:text="'Choose'"></option>
-                        <option th:each="inst : ${institutions}"
-                                th:value="${inst}"
-                                th:text="${inst}"></option>
-                    </select>
+        <div class="mb-4 d-none" id="academic_filter">
+            <hr class="my-4">
+            <div class="row d-flex">
+                <!-- Academic Report -->
+                <div class="col-6 border-end border-secondary-subtle">
+                    <h4 class="fw-bold mb-3">Academic Report</h4>
+                    <div class="mb-4">
+                        <label for="academic_field" class="form-label fw-bold">Field of Study</label>
+                        <input type="text" id="academic_field" class="form-control"
+                               placeholder="e.g. Computer Science, Biology..." th:field="*{academic_field}">
+                    </div>
+                    <div class="mb-4">
+                        <label for="institution_type">Institution type</label>
+                        <select class="form-select" id="institution_type" name="institution_type"
+                                th:field="*{institution_type}">
+                            <option value="" th:text="'Choose'"></option>
+                            <option th:each="inst : ${institutions}"
+                                    th:value="${inst}"
+                                    th:text="${inst}"></option>
+                        </select>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="mb-4 d-none" id="employment_filter">
             <!-- Employment Report -->
             <div class="col-6">
                 <h4 class="fw-bold mb-3">Employment Report</h4>
@@ -150,7 +178,8 @@
                     </div>
                     <div class="col-md-4">
                         <label for="income_amount" class="form-label fw-bold">Income</label>
-                        <input type="number" class="form-control" name="income_amount" id="income_amount"
+                        <input type="number" step="0.01" class="form-control" name="income_amount"
+                               id="income_amount"
                                min="0" th:field="*{income_amount}">
                     </div>
                     <div class="col-md-4">
@@ -180,120 +209,119 @@
                 </div>
             </div>
         </div>
-        <!-- Criminal Report -->
-        <hr class="my-4">
-        <h4 class="fw-bold mb-3">Criminal Report</h4>
+        <div class="mb-4 d-none" id="criminal_filter">
+            <!-- Criminal Report -->
+            <hr class="my-4">
+            <h4 class="fw-bold mb-3">Criminal Report</h4>
 
-        <div class="row mb-4 d-flex">
-            <div class="col-4 border-end border-secondary-subtle">
-                <div class="col">
-                    <label for="crime_severity_level">Severity of Crime</label>
-                    <select class="form-select" id="crime_severity_level" name="crime_severity_level"
-                            th:field="*{crime_severity_level}">
-                        <option value="" th:text="'Choose'"></option>
-                        <option th:each="sev : ${severities}"
-                                th:value="${sev}"
-                                th:text="${sev}"></option>
-                    </select>
-                </div>
-                <!-- Is Resolved -->
-                <div class="col- ms-3 mt-3 mb-4 form-check">
-                    <input class="form-check-input" type="checkbox" name="is_resolved" id="is_resolved"
-                           th:field="*{is_resolved}">
-                    <label class="form-check-label fw-bold" for="is_resolved">Is Resolved</label>
-                </div>
-            </div>
-            <div class="col-4 d-flex justify-content-center border-end border-secondary-subtle">
-                <!-- Punishment Type Radios -->
-                <div class="col-6 mb-3">
-                    <label class="form-label fw-bold">Punishment Type</label>
-                    <!-- Fine Punishment -->
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" th:field="*{punishment_type}"
-                               id="punishmentFineRadio"
-                               value="FINE" onclick="togglePunishment()">
-                        <label class="form-check-label" for="punishmentFineRadio">Fine (euros)</label>
+            <div class="row mb-4 d-flex">
+                <div class="col-4 border-end border-secondary-subtle">
+                    <div class="col">
+                        <label for="crime_severity_level">Severity of Crime</label>
+                        <select class="form-select" id="crime_severity_level" name="crime_severity_level"
+                                th:field="*{crime_severity_level}">
+                            <option value="" th:text="'Choose'"></option>
+                            <option th:each="sev : ${severities}"
+                                    th:value="${sev}"
+                                    th:text="${sev}"></option>
+                        </select>
                     </div>
-                    <!-- Years Punishment -->
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" th:field="*{punishment_type}"
-                               id="punishmentYearsRadio"
-                               value="PRISON" onclick="togglePunishment()">
-                        <label class="form-check-label" for="punishmentYearsRadio">Prison (years)</label>
+                    <!-- Is Resolved -->
+                    <div class="col- ms-3 mt-3 mb-4 form-check">
+                        <input class="form-check-input" type="checkbox" name="is_resolved" id="is_resolved"
+                               th:field="*{is_resolved}">
+                        <label class="form-check-label fw-bold" for="is_resolved">Is Resolved</label>
                     </div>
                 </div>
+                <div class="col-4 d-flex justify-content-center border-end border-secondary-subtle">
+                    <!-- Punishment Type Radios -->
+                    <div class="col-6 mb-3">
+                        <label class="form-label fw-bold">Punishment Type</label>
+                        <!-- Fine Punishment -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{punishment_type}"
+                                   id="punishmentFineRadio"
+                                   value="FINE" onclick="togglePunishment()">
+                            <label class="form-check-label" for="punishmentFineRadio">Fine (euros)</label>
+                        </div>
+                        <!-- Years Punishment -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{punishment_type}"
+                                   id="punishmentYearsRadio"
+                                   value="PRISON" onclick="togglePunishment()">
+                            <label class="form-check-label" for="punishmentYearsRadio">Prison (years)</label>
+                        </div>
+                    </div>
 
-                <!-- Fine input -->
-                <div class="col-md-6" id="fineInput">
-                    <label for="punishment_fine" class="form-label fw-bold">Punishment Fine (euros)</label>
-                    <input type="number" id="punishment_fine" th:field="*{punishment_fine}" class="form-control"
-                           min="0">
-                </div>
+                    <!-- Fine input -->
+                    <div class="col-md-6" id="fineInput">
+                        <label for="punishment_fine" class="form-label fw-bold">Punishment Fine (euros)</label>
+                        <input type="number" id="punishment_fine" th:field="*{punishment_fine}" class="form-control"
+                               min="0">
+                    </div>
 
-                <!-- Years input -->
-                <div class="col-md-6 d-none" id="yearsInput">
-                    <label for="punishment_years" class="form-label fw-bold">Punishment Duration (years)</label>
-                    <input type="number" id="punishment_years" th:field="*{punishment_years}" class="form-control"
-                           min="0">
+                    <!-- Years input -->
+                    <div class="col-md-6 d-none" id="yearsInput">
+                        <label for="punishment_years" class="form-label fw-bold">Punishment Duration (years)</label>
+                        <input type="number" id="punishment_years" th:field="*{punishment_years}" class="form-control"
+                               min="0">
+                    </div>
                 </div>
-            </div>
-            <div class="col-4">
-                <!-- Criminal Type -->
-                <div class="mb-4">
-                    <label for="crime_type_label" class="form-label fw-bold">Criminal Type</label>
-                    <input type="text" id="crime_type_label" name="crime_type_label"
-                           th:field="*{crime_type_label}" class="form-control"
-                           placeholder="e.g. theft, fraud, etc.">
+                <div class="col-4">
+                    <!-- Criminal Type -->
+                    <div class="mb-4">
+                        <label for="crime_type_label" class="form-label fw-bold">Criminal Type</label>
+                        <input type="text" id="crime_type_label" name="crime_type_label"
+                               th:field="*{crime_type_label}" class="form-control"
+                               placeholder="e.g. theft, fraud, fight, etc.">
+                    </div>
                 </div>
             </div>
         </div>
-        <hr class="my-4">
-        <h4 class="fw-bold mb-3">Medical Report</h4>
-        <!-- Doctor Name + Surname -->
-        <div class="row mb-4">
-            <div class="col-6 d-flex justify-content-around">
-                <div class="col-5">
-                    <label for="doctor_name_string" class="form-label fw-bold">Doctor Name</label>
-                    <input type="text" id="doctor_name_string" name="doctor_name_string" class="form-control"
-                           th:field="*{doctor_name_string}" placeholder="e.g. John">
+        <div class="mb-4 d-none" id="medical_filter">
+            <hr class="my-4">
+            <h4 class="fw-bold mb-3">Medical Report</h4>
+            <!-- Doctor Name + Surname -->
+            <div class="row mb-4">
+                <div class="col-6 d-flex justify-content-around">
+                    <div class="col-5">
+                        <label for="doctor_name_string" class="form-label fw-bold">Doctor Name</label>
+                        <input type="text" id="doctor_name_string" name="doctor_name_string" class="form-control"
+                               th:field="*{doctor_name_string}" placeholder="e.g. John">
+                    </div>
+                    <div class="col-5">
+                        <label for="doctor_surname_string" class="form-label fw-bold">Doctor Surname</label>
+                        <input type="text" id="doctor_surname_string" name="doctor_surname_string" class="form-control"
+                               th:field="*{doctor_surname_string}" placeholder="e.g. Smith">
+                    </div>
                 </div>
-                <div class="col-5">
-                    <label for="doctor_surname_string" class="form-label fw-bold">Doctor Surname</label>
-                    <input type="text" id="doctor_surname_string" name="doctor_surname_string" class="form-control"
-                           th:field="*{doctor_surname_string}" placeholder="e.g. Smith">
+                <div class="col-3">
+                    <label for="specialization">Doctor Specialization</label>
+                    <select class="form-select" id="specialization" name="specialization"
+                            th:field="*{specialization}">
+                        <option value="" th:text="'Choose'"></option>
+                        <option th:each="specs : ${specializations}"
+                                th:value="${specs}"
+                                th:text="${specs}"></option>
+                    </select>
                 </div>
-            </div>
-            <div class="col-3">
-                <label for="specialization">Severity of Crime</label>
-                <select class="form-select" id="specialization" name="specialization"
-                        th:field="*{specialization}">
-                    <option value="" th:text="'Choose'"></option>
-                    <option th:each="specs : ${specializations}"
-                            th:value="${specs}"
-                            th:text="${specs}"></option>
-                </select>
-            </div>
-            <!-- Still Active + Chronic Illness + Next Medical Control -->
-            <div class="col-md-3 d-flex flex-column gap-3">
-                <div>
-                    <input class="form-check-input" type="checkbox" checked id="is_active"
-                           onchange="toggleActiveBadge()" th:field="*{is_active}" name="is_active">
-                    <label class="form-check-label fw-bold me-2" for="is_active">Is Doctor still Active</label>
-                    <span id="activeBadge" class="badge bg-success text-white">Not Active</span>
-                </div>
-                <div>
-                    <input class="form-check-input" type="checkbox" name="is_chronic"
-                           id="is_chronic" th:field="*{is_chronic}">
-                    <label class="form-check-label fw-bold me-2" for="is_chronic">Is Chronic Illness</label>
-                </div>
-                <div>
-                    <input class="form-check-input" type="checkbox" checked name="has_next_control"
-                           id="has_next_control" th:field="*{has_next_control}">
-                    <label class="form-check-label fw-bold" for="has_next_control">
-                        Has Next Medical Control Scheduled
-                    </label>
+                <!-- Chronic Illness + Next Medical Control -->
+                <div class="col-md-3 d-flex flex-column gap-3">
+                    <div>
+                        <input class="form-check-input" type="checkbox" name="is_chronic"
+                               id="is_chronic" th:field="*{is_chronic}">
+                        <label class="form-check-label fw-bold me-2" for="is_chronic">Is Chronic Illness</label>
+                    </div>
+                    <div>
+                        <input class="form-check-input" type="checkbox" checked name="has_next_control"
+                               id="has_next_control" th:field="*{has_next_control}">
+                        <label class="form-check-label fw-bold" for="has_next_control">
+                            Has Next Medical Control Scheduled
+                        </label>
+                    </div>
                 </div>
             </div>
+
         </div>
         <div class="mb-4 d-flex justify-content-center">
             <button type="submit" class="btn btn-outline-primary fw-bolder text-center w-50">Search</button>
@@ -305,6 +333,24 @@
 </div>
 
 <script>
+    function selectFilterArea() {
+        const selected = document.getElementById("filter_type").value;
+        const sections = ["person", "employment", "academic", "medical", "criminal"];
+
+        sections.forEach(sec => {
+            const sectionDiv = document.getElementById(`${sec}_filter`);
+            if (sectionDiv) {
+                if (sec.toUpperCase() === selected) {
+                    sectionDiv.classList.remove("d-none");
+                } else {
+                    sectionDiv.classList.add("d-none");
+                }
+            }
+        });
+    }
+
+
+
     function toggleActiveBadge() {
         const checkbox = document.getElementById("is_active");
         const badge = document.getElementById("activeBadge");
@@ -324,6 +370,7 @@
         let start = parseInt(document.getElementById("age_start").value);
         let end = parseInt(document.getElementById("age_end").value);
         let correct = parseInt(document.getElementById("correct_age").value);
+        console.log(start, end, correct);
         if (start > end) [start, end] = [end, start];
         let displayText;
         if (correct > 0) {
@@ -350,11 +397,28 @@
         }
     }
 
+    function disableAgeFilters() {
+        const is_alive_button = document.getElementById("is_alive");
+        const age_end = document.getElementById("age_end");
+        const age_start = document.getElementById("age_start");
+        const correct_age = document.getElementById("correct_age");
+        if (!is_alive_button.checked) {
+            age_end.disabled = true;
+            age_start.disabled = true;
+            correct_age.disabled = true;
+        } else {
+            age_end.disabled = false;
+            age_start.disabled = false;
+            correct_age.disabled = false;
+        }
+    }
 
     window.onload = function () {
+        selectFilterArea();
         updateAgeRange();
         togglePunishment();
         toggleActiveBadge();
+        disableAgeFilters();
     };
 </script>
 
