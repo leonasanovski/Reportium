@@ -56,7 +56,6 @@ public class ReportFilterDTO {
     private DoctorSpecialization specialization;//doc
     private Boolean is_chronic;
     private Boolean has_next_control;
-
     public boolean hasAnyAdvancedFilterSet() {
         return person_name_string != null ||
                 person_surname_string != null ||

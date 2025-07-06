@@ -41,16 +41,20 @@
         </div>
     </nav>
 
-    <form class="mt-5" th:action="@{/advanced_filter_pt2}" method="post" th:object="${filter}">
+    <form class="mt-5" th:action="@{/advanced_filter_pt2}" method="get" th:object="${filter}">
         <div class="mb-4">
-            <label for="filter_type">Select a filter type:</label>
-            <select class="form-select" id="filter_type" name="filter_selected" onchange="selectFilterArea()">
-                <option th:each="fil : ${filter_types} "
+            <label for="filter_selected">Select a filter type:</label>
+            <select class="form-select" id="filter_selected" name="filter_selected" onchange="this.form.submit()">
+                <option th:each="fil : ${filter_types}"
                         th:value="${fil}"
-                        th:text="${fil}"></option>
+                        th:text="${fil}"
+                        th:selected="${fil == filter.filter_selected}">
+                </option>
             </select>
         </div>
-        <div id="person_filter" class="mb-4 d-none">
+    </form>
+    <form th:action="@{/advanced_filter_pt2}" th:method="post" th:object="${filter}">
+        <div id="person_filter" class="mb-4" th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).PERSON}">
             <h3 class="text-center px-4 py-3 bg-dark text-white fw-bolder rounded">Advanced Filtering Page</h3>
             <hr class="my-4 border-dark">
             <h4 class="fw-bold mb-3">Person</h4>
@@ -136,7 +140,7 @@
             </div>
         </div>
 
-        <div class="mb-4 d-none" id="academic_filter">
+        <div class="mb-4" id="academic_filter" th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).ACADEMIC}">
             <hr class="my-4">
             <div class="row d-flex">
                 <!-- Academic Report -->
@@ -160,7 +164,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4 d-none" id="employment_filter">
+        <div class="mb-4" id="employment_filter" th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).EMPLOYMENT}">
             <!-- Employment Report -->
             <div class="col-6">
                 <h4 class="fw-bold mb-3">Employment Report</h4>
@@ -209,7 +213,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4 d-none" id="criminal_filter">
+        <div class="mb-4" id="criminal_filter" th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).CRIMINAL}">
             <!-- Criminal Report -->
             <hr class="my-4">
             <h4 class="fw-bold mb-3">Criminal Report</h4>
@@ -278,7 +282,8 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4 d-none" id="medical_filter">
+        <div class="mb-4" id="medical_filter"
+             th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).MEDICAL}">
             <hr class="my-4">
             <h4 class="fw-bold mb-3">Medical Report</h4>
             <!-- Doctor Name + Surname -->
@@ -321,49 +326,19 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="mb-4 d-flex justify-content-center">
             <button type="submit" class="btn btn-outline-primary fw-bolder text-center w-50">Search</button>
         </div>
-        <div class="d-flex justify-content-center">
-            <a th:href="@{/reports}" class="btn btn-outline-danger w-25 text-center fw-bolder">Cancel Filtering</a>
-        </div>
     </form>
+    <div class="d-flex justify-content-center">
+        <a th:href="@{/reports}" class="btn btn-outline-danger w-25 text-center fw-bolder">Cancel Filtering</a>
+    </div>
+
+
 </div>
 
 <script>
-    function selectFilterArea() {
-        const selected = document.getElementById("filter_type").value;
-        const sections = ["person", "employment", "academic", "medical", "criminal"];
-
-        sections.forEach(sec => {
-            const sectionDiv = document.getElementById(`${sec}_filter`);
-            if (sectionDiv) {
-                if (sec.toUpperCase() === selected) {
-                    sectionDiv.classList.remove("d-none");
-                } else {
-                    sectionDiv.classList.add("d-none");
-                }
-            }
-        });
-    }
-
-
-    function toggleActiveBadge() {
-        const checkbox = document.getElementById("is_active");
-        const badge = document.getElementById("activeBadge");
-
-        if (checkbox.checked) {
-            badge.textContent = "Active";
-            badge.classList.remove("bg-danger");
-            badge.classList.add("bg-success");
-        } else {
-            badge.textContent = "Retired";
-            badge.classList.remove("bg-success");
-            badge.classList.add("bg-danger");
-        }
-    }
 
     function updateAgeRange() {
         let start = parseInt(document.getElementById("age_start").value);
@@ -413,12 +388,9 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        selectFilterArea();
         updateAgeRange();
         togglePunishment();
         disableAgeFilters();
-
-        document.getElementById("filter_type").addEventListener("change", selectFilterArea);
         document.getElementById("age_start").addEventListener("input", updateAgeRange);
         document.getElementById("age_end").addEventListener("input", updateAgeRange);
         document.getElementById("correct_age").addEventListener("input", updateAgeRange);

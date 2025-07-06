@@ -29,37 +29,56 @@ public class AdvancedFilterController {
         this.filterSessionService = filterSessionService;
     }
     @GetMapping("/advanced_filter")
-    public String showAdvancedFilterForm(Model model) {
-        model.addAttribute("filter", new ReportFilterDTO());
-        model.addAttribute("severities", Arrays.asList(SeverityLevel.values()));
-        model.addAttribute("specializations", Arrays.asList(DoctorSpecialization.values()));
-        model.addAttribute("comparisons", Arrays.asList(ComparisonDTOEnum.values()));
-        model.addAttribute("institutions", Arrays.asList(InstitutionType.values()));
+    public String showInitialFilterSelection(Model model) {
+        ReportFilterDTO defaultFilter = new ReportFilterDTO();
+        defaultFilter.setFilter_selected(SelectedFilterSection.PERSON);
+        model.addAttribute("filter", defaultFilter);
         model.addAttribute("filter_types", SelectedFilterSection.values());
-        return "filter_panel";
+        return "redirect:/advanced_filter_pt2?filter_selected=PERSON";//default to be selected as person
     }
+
     @PostMapping("/advanced_filter")
     public String applyAdvancedFilter(@ModelAttribute ReportFilterDTO filter, Model model) {
         System.out.println("Advanced filter applied!");
         System.out.println(filter);
         return "redirect:/reports";
     }
+    @GetMapping("/advanced_filter_pt2")
+    public String showAdvancedFilterPage(@RequestParam(name = "filter_selected", required = false) String filterSelected, Model model) {
+        ReportFilterDTO filterDTO = new ReportFilterDTO();
+        SelectedFilterSection filter_type = (filterSelected != null)
+                ? SelectedFilterSection.valueOf(filterSelected)
+                : SelectedFilterSection.PERSON;
+        filterDTO.setFilter_selected(filter_type);
+        model.addAttribute("choice", filter_type);
+        model.addAttribute("filter", filterDTO);
+        model.addAttribute("filter_types", SelectedFilterSection.values());
+        model.addAttribute("severities", Arrays.asList(SeverityLevel.values()));
+        model.addAttribute("specializations", Arrays.asList(DoctorSpecialization.values()));
+        model.addAttribute("comparisons", Arrays.asList(ComparisonDTOEnum.values()));
+        model.addAttribute("institutions", Arrays.asList(InstitutionType.values()));
+        addSharedEnums(model);
+
+        return "filter_panel";
+    }
+
     @PostMapping("/advanced_filter_pt2")
     public String handleFilter(@ModelAttribute("filter") ReportFilterDTO filter, Model model) {
-        System.out.println("Selected filter: " + filter.getFilter_selected());
+        SelectedFilterSection section = filter.getFilter_selected();
+        if (section == null) filter.setFilter_selected(SelectedFilterSection.PERSON);
         List<Report> filteredReports = reportService.getReportsByAdvancedFilter(filter);
-
-        System.out.println("Results: " + filteredReports.size());
-        for (Report r : filteredReports) {
-            System.out.println("Report ID: " + r.getReportId() + ", Summary: " + r.getSummary());
-        }
-
         model.addAttribute("results", filteredReports);
         model.addAttribute("filter", filter);
+        model.addAttribute("choice", section);
+        addSharedEnums(model);
         filterSessionService.save(filter);
         return "filtered_results";
     }
 
-
-
+    private void addSharedEnums(Model model) {
+        model.addAttribute("severities", Arrays.asList(SeverityLevel.values()));
+        model.addAttribute("specializations", Arrays.asList(DoctorSpecialization.values()));
+        model.addAttribute("comparisons", Arrays.asList(ComparisonDTOEnum.values()));
+        model.addAttribute("institutions", Arrays.asList(InstitutionType.values()));
+    }
 }
