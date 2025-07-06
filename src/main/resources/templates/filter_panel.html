@@ -257,7 +257,7 @@
                     <div class="col-md-6" id="fineInput">
                         <label for="punishment_fine" class="form-label fw-bold">Punishment Fine (euros)</label>
                         <input type="number" id="punishment_fine" th:field="*{punishment_fine}" class="form-control"
-                               min="0">
+                               min="0" step="0.01">
                     </div>
 
                     <!-- Years input -->
@@ -350,7 +350,6 @@
     }
 
 
-
     function toggleActiveBadge() {
         const checkbox = document.getElementById("is_active");
         const badge = document.getElementById("activeBadge");
@@ -413,13 +412,21 @@
         }
     }
 
-    window.onload = function () {
+    document.addEventListener("DOMContentLoaded", function () {
         selectFilterArea();
         updateAgeRange();
         togglePunishment();
-        toggleActiveBadge();
         disableAgeFilters();
-    };
+
+        document.getElementById("filter_type").addEventListener("change", selectFilterArea);
+        document.getElementById("age_start").addEventListener("input", updateAgeRange);
+        document.getElementById("age_end").addEventListener("input", updateAgeRange);
+        document.getElementById("correct_age").addEventListener("input", updateAgeRange);
+        document.getElementById("punishmentFineRadio").addEventListener("click", togglePunishment);
+        document.getElementById("punishmentYearsRadio").addEventListener("click", togglePunishment);
+        document.getElementById("is_alive").addEventListener("change", disableAgeFilters);
+    });
+
 </script>
 
 </body>

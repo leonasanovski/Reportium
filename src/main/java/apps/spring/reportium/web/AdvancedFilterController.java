@@ -48,6 +48,12 @@ public class AdvancedFilterController {
     public String handleFilter(@ModelAttribute("filter") ReportFilterDTO filter, Model model) {
         System.out.println("Selected filter: " + filter.getFilter_selected());
         List<Report> filteredReports = reportService.getReportsByAdvancedFilter(filter);
+
+        System.out.println("Results: " + filteredReports.size());
+        for (Report r : filteredReports) {
+            System.out.println("Report ID: " + r.getReportId() + ", Summary: " + r.getSummary());
+        }
+
         model.addAttribute("results", filteredReports);
         model.addAttribute("filter", filter);
         filterSessionService.save(filter);

@@ -31,13 +31,15 @@ public class ReportFilterSpecificationBuilder {
     public static Specification<Report> build(ReportFilterDTO filter) {
         return (root, query, cb) -> {
             //global things
-            query.distinct(true);
+            query.distinct(false);
             LocalDate now = LocalDate.now();
             List<Predicate> predicates = new ArrayList<>();
+            Join<Report, Person> report_on_person_join = root.join("person", JoinType.LEFT);
+            //PERSON PART FILTERS
+            //proof of concept 1 -> Person Join Filters
+            /* Person */
+            //ALL TESTED!
             if (filter.getFilter_selected().equals(SelectedFilterSection.PERSON)) {
-                //proof of concept 1 -> Person Join Filters
-                /* Person */
-                Join<Report, Person> report_on_person_join = root.join("person", JoinType.LEFT);
                 // predicate that checks if there exists a person with the string provided in the name
                 if (filter.getPerson_name_string() != null && !filter.getPerson_name_string().isBlank()) {
                     predicates.add(cb.like(cb.lower(report_on_person_join.get("name")),
@@ -79,9 +81,11 @@ public class ReportFilterSpecificationBuilder {
                     ));
                 }
             }
+            //EMPLOYMENT PART FILTERS
+            //proof of concept 2 -> Employment Report Join Filters
+            /* Employment Report */
+            //ALL TESTED!
             if (filter.getFilter_selected().equals(SelectedFilterSection.EMPLOYMENT)) {
-                //proof of concept 2 -> Employment Report Join Filters
-                /* Employment Report */
                 Join<Report, EmploymentReport> employment_report_join = root.join("employmentReport", JoinType.LEFT);
                 //predicate for income check (more,less,equal)
                 if (filter.getIncome_comparison() != null && filter.getIncome_amount() > 0) {
@@ -108,9 +112,11 @@ public class ReportFilterSpecificationBuilder {
                     }
                 }
             }
+            //ACADEMIC PART FILTERS
+            //proof of concept 3 -> Academic Report Join Filters
+            /* Academic Report */
+            //ALL TESTED!
             if (filter.getFilter_selected().equals(SelectedFilterSection.ACADEMIC)) {
-                //proof of concept 3 -> Academic Report Join Filters
-                /* Academic Report */
                 Join<Report, AcademicReport> academic_report_join = root.join("academicReport", JoinType.LEFT);
                 //predicate for field of study
                 if (filter.getAcademic_field() != null && !filter.getAcademic_field().isBlank()) {
@@ -122,39 +128,44 @@ public class ReportFilterSpecificationBuilder {
                     predicates.add(cb.equal(academic_report_institution_join.get("type"), filter.getInstitution_type()));
                 }
             }
+            //MEDICAL PART FILTERS
+            //proof of concept 4 -> Medical Report Join Filters
+            /* Medical Report */
+            //ALL TESTED!
             if (filter.getFilter_selected().equals(SelectedFilterSection.MEDICAL)) {
-                //proof of concept 4 -> Medical Report Join Filters
-                /* Medical Report */
-                Join<Report, MedicalReport> medical_report_join = root.join("medicalReport", JoinType.LEFT);
-                Join<MedicalReport, Doctor> medical_report_doctor_join = medical_report_join.join("doctor", JoinType.LEFT);
-                //predicate for has next control
-                if (filter.getHas_next_control()) {
-                    predicates.add(cb.isNotNull(medical_report_join.get("nextControlDate")));
+                // Join to MedicalReport and Doctor
+                Join<Report, MedicalReport> medicalReportJoin = root.join("medicalReport", JoinType.LEFT);
+                Join<MedicalReport, Doctor> doctorJoin = medicalReportJoin.join("doctor", JoinType.LEFT);
+                Join<MedicalReport, MedicalReportDiagnosis> diagnosisLinkJoin = medicalReportJoin.join("medicalReportDiagnoses", JoinType.LEFT);
+                Join<MedicalReportDiagnosis, Diagnosis> diagnosisJoin = diagnosisLinkJoin.join("diagnosis", JoinType.LEFT);
+                // Has Next Medical Control
+                if (Boolean.TRUE.equals(filter.getHas_next_control())) {
+                    predicates.add(cb.isNotNull(medicalReportJoin.get("nextControlDate")));
                 } else {
-                    predicates.add(cb.isNull(medical_report_join.get("nextControlDate")));
+                    predicates.add(cb.isNull(medicalReportJoin.get("nextControlDate")));
                 }
-                //predicate for doctor name
+                // Doctor Name
                 if (filter.getDoctor_name_string() != null && !filter.getDoctor_name_string().isBlank()) {
-                    predicates.add(cb.like(cb.lower(medical_report_doctor_join.get("name")), "%" + filter.getDoctor_name_string().toLowerCase() + "%"));
+                    predicates.add(cb.like(cb.lower(doctorJoin.get("name")), "%" + filter.getDoctor_name_string().toLowerCase() + "%"));
                 }
-                //predicate for doctor surname
+                // Doctor Surname
                 if (filter.getDoctor_surname_string() != null && !filter.getDoctor_surname_string().isBlank()) {
-                    predicates.add(cb.like(cb.lower(medical_report_doctor_join.get("surname")), "%" + filter.getDoctor_surname_string().toLowerCase() + "%"));
+                    predicates.add(cb.like(cb.lower(doctorJoin.get("surname")), "%" + filter.getDoctor_surname_string().toLowerCase() + "%"));
                 }
-                //predicate for specialization
+                // Specialization
                 if (filter.getSpecialization() != null) {
-                    predicates.add(cb.equal(medical_report_doctor_join.get("specialization"), filter.getSpecialization()));
+                    predicates.add(cb.equal(doctorJoin.get("specialization"), filter.getSpecialization()));
                 }
-                Join<MedicalReport, MedicalReportDiagnosis> mrd_join = medical_report_join.join("medicalReportDiagnoses", JoinType.INNER);
-                Join<MedicalReportDiagnosis, Diagnosis> diagnosis_join = mrd_join.join("diagnosis", JoinType.INNER);
-                //predicate for if the illness is chronic
+                // Chronic diagnosis
                 if (filter.getIs_chronic() != null) {
-                    predicates.add(cb.equal(diagnosis_join.get("isChronic"), filter.getIs_chronic()));
+                    predicates.add(cb.equal(diagnosisJoin.get("isChronic"), filter.getIs_chronic()));
                 }
             }
+            //FIXME
+            //CRIMINAL PART FILTERS
+            //proof of concept 5 -> Criminal Report Join Filters
+            /* Criminal Report */
             if (filter.getFilter_selected().equals(SelectedFilterSection.CRIMINAL)) {
-                //proof of concept 5 -> Criminal Report Join Filters
-                /* Criminal Report */
                 Join<Report, CriminalReport> criminal_report_join = root.join("criminalReport", JoinType.LEFT);
                 Join<CriminalReport, CrimeType> crime_type_join = criminal_report_join.join("crimeType", JoinType.LEFT);
                 //predicate for severity level
@@ -182,8 +193,6 @@ public class ReportFilterSpecificationBuilder {
                     predicates.add(cb.like(cb.lower(crime_type_join.get("label")), "%" + filter.getCrime_type_label().toLowerCase() + "%"));
                 }
             }
-
-
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }

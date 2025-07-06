@@ -47,7 +47,7 @@ public class ReportFilterDTO {
     private Boolean is_resolved;
     @Enumerated(EnumType.STRING)
     private PunishmentType punishment_type;//FINE, PRISON
-    private Integer punishment_fine;//if a punishment type is fine (euros)
+    private Double punishment_fine;//if a punishment type is fine (euros)
     private Integer punishment_years;//if a punishment type is prison (years)
     /*MEDICAL REPORT FIELDS*/
     private String doctor_name_string;//doc
