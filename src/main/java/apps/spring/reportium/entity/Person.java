@@ -60,4 +60,8 @@ public class Person {
     @Column(name = "contact_phone", nullable = false)
     private String contactPhone;
 
+    @Override
+    public String toString() {
+        return name + ' ' + surname;
+    }
 }

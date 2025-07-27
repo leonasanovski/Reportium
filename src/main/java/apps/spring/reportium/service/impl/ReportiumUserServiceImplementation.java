@@ -3,7 +3,6 @@ package apps.spring.reportium.service.impl;
 import apps.spring.reportium.entity.ReportiumUser;
 import apps.spring.reportium.entity.UserProfile;
 import apps.spring.reportium.repository.ReportiumUserRepository;
-import apps.spring.reportium.repository.RoleRepository;
 import apps.spring.reportium.service.ReportiumUserService;
 import apps.spring.reportium.service.RoleService;
 import apps.spring.reportium.service.UserProfileService;

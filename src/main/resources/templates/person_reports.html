@@ -379,10 +379,39 @@
 </nav>
 
 <div class="container">
-    <!-- Page Title -->
     <h1 class="page-title" th:text="'Reports for ' + ${person.name} + ' ' + ${person.surname}">
         Reports for Person
     </h1>
+    <div class="px-2 py-3 rounded-2 border border-secondary-subtle mb-4">
+        <h4 class="text-secondary mb-3 text-center">Add a New Report</h4>
+        <div class="row row-cols-2 row-cols-md-4 g-3 w-100 py-3">
+            <div class="col">
+                <a class="btn btn-outline-warning fw-bolder w-100"
+                   th:href="@{/reports/add/medical(personId=${person.getPersonId()})}">
+                    <i class="bi bi-plus-lg"></i> New Medical Report
+                </a>
+            </div>
+            <div class="col">
+                <a class="btn btn-outline-danger fw-bolder w-100"
+                   th:href="@{/reports/add/criminal(personId=${person.getPersonId()})}">
+                    <i class="bi bi-plus-lg"></i> New Criminal Report
+                </a>
+            </div>
+            <div class="col">
+                <a class="btn btn-outline-success fw-bolder w-100"
+                   th:href="@{/reports/add/academic(personId=${person.getPersonId()})}">
+                    <i class="bi bi-plus-lg"></i> New Academic Report
+                </a>
+            </div>
+            <div class="col">
+                <a class="btn btn-outline-primary fw-bolder w-100"
+                   th:href="@{/reports/add/employment(personId=${person.getPersonId()})}">
+                    <i class="bi bi-plus-lg"></i> New Employment Report
+                </a>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Criminal Reports -->
     <div class="report-section">

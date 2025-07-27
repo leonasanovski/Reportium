@@ -1,23 +1,18 @@
 package apps.spring.reportium.service.impl;
+
 import apps.spring.reportium.entity.UserProfileLog;
 import apps.spring.reportium.repository.UserProfileLogRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import apps.spring.reportium.entity.ReportiumUser;
-import apps.spring.reportium.entity.Role;
 import apps.spring.reportium.entity.UserProfile;
 import apps.spring.reportium.entity.exceptions.NoExistingCredentialsException;
 import apps.spring.reportium.entity.exceptions.NotAuthenticatedUserException;
 import apps.spring.reportium.entity.exceptions.UserAlreadyExistsException;
 import apps.spring.reportium.repository.ReportiumUserRepository;
-import apps.spring.reportium.repository.RoleRepository;
 import apps.spring.reportium.repository.UserProfileRepository;
 import apps.spring.reportium.service.AuthenticationService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +32,6 @@ public class AuthenticateServiceImplementation implements AuthenticationService 
         this.profileLogRepository = profileLogRepository;
     }
 
-
     @Override
     @Transactional
     public void register_user(String name, String surname, String email, String password, String password_confirmation) {
@@ -47,7 +41,7 @@ public class AuthenticateServiceImplementation implements AuthenticationService 
         if (!password.equals(password_confirmation)) {
             throw new IllegalArgumentException("Passwords do not match. Check the mistake and try again.");
         }
-        if(reportiumUserRepository.findByEmail(email).isPresent()) {
+        if (reportiumUserRepository.findByEmail(email).isPresent()) {
             throw new UserAlreadyExistsException(String.format("User with this email '%s' already exists.", email));
         }
         //creating the user
@@ -64,7 +58,7 @@ public class AuthenticateServiceImplementation implements AuthenticationService 
         UserProfileLog userProfileLog = new UserProfileLog();
         userProfileLog.setUserProfile(user_profile);
         userProfileLog.setChangedAt(LocalDateTime.now());
-        String description = String.format("New user <%s %s> with mail '%s' has been registered.", savedUser.getName(), savedUser.getSurname() , savedUser.getEmail());
+        String description = String.format("New user <%s %s> with mail '%s' has been registered.", savedUser.getName(), savedUser.getSurname(), savedUser.getEmail());
         userProfileLog.setChangeDescription(description);
         profileLogRepository.save(userProfileLog);
     }
@@ -83,12 +77,13 @@ public class AuthenticateServiceImplementation implements AuthenticationService 
         UserProfile up = userProfileRepository.findByReportiumUser(user).get();
         userProfileLog.setUserProfile(up);
         userProfileLog.setChangedAt(LocalDateTime.now());
-        String description = String.format("User <%s %s> with mail '%s' has logged in.", user.getName(), user.getSurname() , user.getEmail());
+        String description = String.format("User <%s %s> with mail '%s' has logged in.", user.getName(), user.getSurname(), user.getEmail());
         userProfileLog.setChangeDescription(description);
         profileLogRepository.save(userProfileLog);
         return user;
 
     }
+
     @Override
     public ReportiumUser getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -99,7 +94,4 @@ public class AuthenticateServiceImplementation implements AuthenticationService 
         return reportiumUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NoExistingCredentialsException("Authenticated user not found in the database."));
     }
-
-
-
 }

@@ -51,5 +51,4 @@ public class Report {
 
     @OneToOne(mappedBy = "report", fetch = FetchType.LAZY)
     private CriminalReport criminalReport;
-
 }

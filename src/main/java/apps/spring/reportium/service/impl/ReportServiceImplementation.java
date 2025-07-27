@@ -1,22 +1,33 @@
 package apps.spring.reportium.service.impl;
 
 import apps.spring.reportium.entity.DTOs.*;
+import apps.spring.reportium.entity.EmploymentReport;
 import apps.spring.reportium.entity.Report;
 import apps.spring.reportium.repository.ReportRepository;
 import apps.spring.reportium.service.ReportService;
 import apps.spring.reportium.specifications.ReportFilterSpecificationBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class ReportServiceImplementation implements ReportService {
     private final ReportRepository reportRepository;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public ReportServiceImplementation(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
@@ -63,4 +74,34 @@ public class ReportServiceImplementation implements ReportService {
         Specification<Report> spec = ReportFilterSpecificationBuilder.build(filter);
         return reportRepository.findAll(spec); // from JpaSpecificationExecutor
     }
+
+    @Override
+    public void saveNewEmploymentReport(Long personId,
+                                        LocalDate startDate,
+                                        LocalDate endDate,
+                                        String jobRole,
+                                        BigDecimal income,
+                                        String summary) {
+
+        System.out.println("Calling stored procedure with:");
+        System.out.println("personId = " + personId);
+        System.out.println("startDate = " + startDate);
+        System.out.println("endDate = " + endDate);
+        System.out.println("jobRole = " + jobRole);
+        System.out.println("income = " + income);
+        System.out.println("summary = " + summary);
+
+        jdbcTemplate.update(
+                "CALL insert_employment_report(?::integer, ?::date, ?::date, ?::text, ?::numeric, ?::text)",
+                personId,
+                startDate,
+                endDate,
+                jobRole,
+                income,
+                summary
+        );
+
+
+    }
+
 }

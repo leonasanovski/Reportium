@@ -4,9 +4,7 @@ import apps.spring.reportium.entity.*;
 import apps.spring.reportium.entity.DTOs.PersonReportSummaryDTO;
 import apps.spring.reportium.repository.*;
 import apps.spring.reportium.service.PersonService;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
