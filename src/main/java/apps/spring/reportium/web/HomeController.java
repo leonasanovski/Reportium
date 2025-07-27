@@ -40,11 +40,13 @@ public class HomeController {
         List<MedicalReportPerPersonDTO> person_mr = reportRepository.getMedicalReportsByPersonId(personId);
         List<AcademicReportPerPersonDTO> person_ar = reportRepository.getAcademicReportsByPersonId(personId);
         List<EmploymentReportPerPersonDTO> person_er = reportRepository.getEmploymentReportsByPersonId(personId);
-
+        ReportStatisticsPerPersonDTO statistics_per_person = reportRepository.getStatisticsForPerson(personId);
+        System.out.println(statistics_per_person);
         model.addAttribute("medical_reports", person_mr);
         model.addAttribute("criminal_reports", person_cr);
         model.addAttribute("academic_reports", person_ar);
         model.addAttribute("employment_reports", person_er);
+        model.addAttribute("statistics", statistics_per_person);
         model.addAttribute("person", person);
         return "person_reports";
     }

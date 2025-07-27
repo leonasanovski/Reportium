@@ -77,66 +77,6 @@ public class ReportFilterDTO {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Report Filter: ").append(filter_selected.toString()).append("\n");
-        //TODO the advanced filter description
-//        switch (filter_selected) {
-//            case PERSON:
-//                sb.append("Person: ").append(person_name_string).append(" ").append(person_surname_string).append("\n");
-//                if (correct_age != null && correct_age > 0) {
-//                    sb.append("Correct Age: ").append(correct_age);
-//
-//                } else if (age_start != null && age_start > 0 && age_end != null && age_end < 120) {
-//                    sb.append("Age Range [").append(age_start).append(",").append(age_end).append("] ").append("\n");
-//                }
-//                sb.append("Gender: ").append(gender.toString()).append("\n");
-//                sb.append("Address: ").append(address_string).append("\n");
-//                if (getIs_alive().equals(Boolean.TRUE)) {
-//                    sb.append("alive").append("\n");
-//                } else {
-//                    sb.append("dead").append("\n");
-//                }
-//                break;
-//            case ACADEMIC:
-//                sb.append("Academic Field: ").append(academic_field).append("\n");
-//                sb.append("Institution Type: ").append(institution_type.toString()).append("\n");
-//                break;
-//            case EMPLOYMENT:
-//                if (income_comparison != null && income_amount != null && income_amount > 0)
-//                    sb.append("Income ").append(income_comparison).append(" ").append(income_amount).append(" EUR\n");
-//                if (years_experience_comparison != null && years_experience != null && years_experience > 0)
-//                    sb.append("Experience ").append(years_experience_comparison).append(" ")
-//                            .append(years_experience).append(" years\n");
-//                break;
-//
-//            case CRIMINAL:
-//                if (crime_type_label != null && !crime_type_label.isBlank())
-//                    sb.append("Crime Type: ").append(crime_type_label).append("\n");
-//                if (crime_severity_level != null)
-//                    sb.append("Severity Level: ").append(crime_severity_level).append("\n");
-//                if (is_resolved != null)
-//                    sb.append("Resolved: ").append(is_resolved ? "Yes" : "No").append("\n");
-//
-//                if (punishment_type != null) {
-//                    sb.append("Punishment: ").append(punishment_type).append(" ");
-//                    if (punishment_type == PunishmentType.FINE && punishment_fine != null)
-//                        sb.append(punishment_fine).append(" EUR\n");
-//                    else if (punishment_type == PunishmentType.PRISON && punishment_years != null)
-//                        sb.append(punishment_years).append(" years\n");
-//                }
-//                break;
-//
-//            case MEDICAL:
-//                if (doctor_name_string != null && !doctor_name_string.isBlank())
-//                    sb.append("Doctor Name: ").append(doctor_name_string).append("\n");
-//                if (doctor_surname_string != null && !doctor_surname_string.isBlank())
-//                    sb.append("Doctor Surname: ").append(doctor_surname_string).append("\n");
-//                if (specialization != null)
-//                    sb.append("Specialization: ").append(specialization).append("\n");
-//                if (is_chronic != null)
-//                    sb.append("Chronic Illness: ").append(is_chronic ? "Yes" : "No").append("\n");
-//                if (has_next_control != null)
-//                    sb.append("Next Control Scheduled: ").append(has_next_control ? "Yes" : "No").append("\n");
-//                break;
-//        }
         return sb.toString();
     }
 }

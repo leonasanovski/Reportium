@@ -4,102 +4,431 @@
     <meta charset="UTF-8">
     <title th:text="'Reports for ' + ${person.name} + ' ' + ${person.surname}">Person Reports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(to right, #020b49, #001e61, #00297e); /* Night blue sky gradient */
+            background: #667eea;
             min-height: 100vh;
-            padding-top: 60px;
-            font-family: 'Segoe UI', sans-serif;
-            color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #2d3748;
         }
 
         .container {
-            background-color: #fff;
-            color: #000;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            margin-top: 100px;
+            margin-bottom: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        h2, h4 {
-            color: #2c3e50;
+        .navbar {
+            background: rgba(17, 24, 39, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            padding: 12px 24px !important;
+            border-radius: 12px !important;
+            border: none !important;
+            font-weight: 700 !important;
+            font-size: 1.8rem !important;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 8px 16px !important;
+            border-radius: 8px;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: #667eea;
+            border-radius: 2px;
         }
 
         .report-section {
-            margin-bottom: 50px;
+            margin-bottom: 4rem;
         }
 
-        h5 {
-            color: #e74c3c;
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 20px;
+            border-radius: 16px;
+            border-left: 5px solid;
+        }
+
+        .criminal-header {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .academic-header {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .employment-header {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .medical-header {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .section-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .criminal-icon {
+            color: #ef4444;
+        }
+
+        .academic-icon {
+            color: #10b981;
+        }
+
+        .employment-icon {
+            color: #3b82f6;
+        }
+
+        .medical-icon {
+            color: #f59e0b;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .fancy-table {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: white;
+            margin-bottom: 2rem;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        .fancy-table thead {
+            background: #1f2937;
+        }
+
+        .fancy-table thead th {
+            color: white !important;
+            font-weight: 600 !important;
+            padding: 16px !important;
+            border: none !important;
+            font-size: 0.9rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            text-align: left !important;
+            vertical-align: middle !important;
+            background: inherit !important;
+        }
+
+        .fancy-table tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+            background: white;
+        }
+
+        .fancy-table tbody tr:nth-child(even) {
+            background: rgba(248, 249, 250, 0.5);
+        }
+
+        .fancy-table tbody td {
+            padding: 16px !important;
+            border: none !important;
+            vertical-align: middle !important;
+            background: inherit;
+        }
+
+        .criminal-table thead,
+        .criminal-table thead th {
+            background: #dc2626 !important;
+            color: white !important;
+        }
+
+        .academic-table thead,
+        .academic-table thead th {
+            background: #059669 !important;
+            color: white !important;
+        }
+
+        .employment-table thead,
+        .employment-table thead th {
+            background: #2563eb !important;
+            color: white !important;
+        }
+
+        .medical-table thead,
+        .medical-table thead th {
+            background: #d97706 !important;
+            color: white !important;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(156, 163, 175, 0.1) 0%, rgba(156, 163, 175, 0.05) 100%);
+            border-radius: 16px;
+            border: 2px dashed #d1d5db;
+        }
+
+        .no-data-icon {
+            font-size: 3rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        .no-data-text {
+            color: #6b7280;
+            font-size: 1.1rem;
             font-style: italic;
         }
 
-        table {
-            border-radius: 8px;
+        .statistics-section {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .statistics-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1f2937;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
             overflow: hidden;
         }
 
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #667eea;
+        }
+
+        .stat-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .back-button {
+            background: #667eea;
+            border: none;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-button:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin-top: 80px;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold px-3 py-2 rounded-2 text-white"
-               th:href="@{/}"
-               style="background: linear-gradient(to right, #003366, #004080);
-          border-left: 5px solid #FFD700;
-          font-size: 1.5rem;
-          box-shadow: 0 0 5px rgba(0,0,0,0.2);
-          letter-spacing: 1px;">
-                <span style="color: #FFD700;">R</span>eportium
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarContent" aria-controls="navbarContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/reports}">All Reports</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a class="nav-link text-info" th:href="@{/profiles}">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" th:href="@{/logout}">Logout</a>
-                    </li>
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-chart-line me-2"></i>
+            Reportium
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarContent" aria-controls="navbarContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link text-success" th:href="@{/reports}"><i class="bi bi-person-lines-fill"></i>All
+                        Reports</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link text-info" th:href="@{/profiles}"><i class="bi bi-people-fill"></i>Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" th:href="@{/logout}"><i
+                            class="bi bi-door-closed-fill"></i>Logout</a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <h2 th:text="'Reports for ' + ${person.name} + ' ' + ${person.surname}"></h2>
+<div class="container">
+    <!-- Page Title -->
+    <h1 class="page-title" th:text="'Reports for ' + ${person.name} + ' ' + ${person.surname}">
+        Reports for Person
+    </h1>
 
     <!-- Criminal Reports -->
     <div class="report-section">
-        <h4>Criminal Reports—(total --> <span class="badge bg-secondary-subtle text-dark"
-                                              th:text="${criminal_reports.size()}"></span>)</h4>
-        <div th:if="${#lists.isEmpty(criminal_reports)}">
-            <h5 th:text="'No criminal report exists for ' + ${person.name} + ' ' + ${person.surname}"></h5>
+        <div class="section-header criminal-header">
+            <div class="section-icon criminal-icon">
+                <i class="fas fa-gavel"></i>
+            </div>
+            <div>
+                <h2 class="section-title">Criminal Reports</h2>
+                <p class="mb-0 text-muted">Legal proceedings and criminal activity records</p>
+            </div>
         </div>
+
+        <div th:if="${#lists.isEmpty(criminal_reports)}">
+            <div class="no-data">
+                <i class="fas fa-shield-alt no-data-icon"></i>
+                <div class="no-data-text"
+                     th:text="'No criminal reports found for ' + ${person.name} + ' ' + ${person.surname}">
+                    No criminal reports found
+                </div>
+            </div>
+        </div>
+
         <div th:unless="${#lists.isEmpty(criminal_reports)}">
-            <table class="table table-bordered table-warning text-center">
+            <table class="table fancy-table criminal-table">
                 <thead>
                 <tr>
                     <th>Report ID</th>
                     <th>Crime Type</th>
                     <th>Resolved</th>
                     <th>Severity</th>
-                    <th>Description of Punishment</th>
+                    <th>Punishment</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="report : ${criminal_reports}">
-                    <td th:text="${report.reportId}"></td>
+                    <td><strong th:text="${report.reportId}"></strong></td>
                     <td th:text="${report.label}"></td>
-                    <td th:text="${report.resolved} ? 'Yes' : 'No'"></td>
+                    <td>
+                                <span th:if="${report.resolved}" class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>Yes
+                                </span>
+                        <span th:unless="${report.resolved}" class="badge bg-warning">
+                                    <i class="fas fa-clock me-1"></i>No
+                                </span>
+                    </td>
                     <td th:text="${report.severityLevel}"></td>
                     <td th:text="${report.descriptivePunishment}"></td>
                 </tr>
@@ -110,29 +439,45 @@
 
     <!-- Academic Reports -->
     <div class="report-section">
-        <h4>Academic Reports—(total --> <span class="badge bg-secondary-subtle text-dark"
-                                              th:text="${academic_reports.size()}"></span>)</h4>
-        <div th:if="${#lists.isEmpty(academic_reports)}">
-            <h5 th:text="'No academic report exists for ' + ${person.name} + ' ' + ${person.surname}"></h5>
+        <div class="section-header academic-header">
+            <div class="section-icon academic-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div>
+                <h2 class="section-title">Academic Reports</h2>
+                <p class="mb-0 text-muted">Educational achievements and academic history</p>
+            </div>
         </div>
+
+        <div th:if="${#lists.isEmpty(academic_reports)}">
+            <div class="no-data">
+                <i class="fas fa-book no-data-icon"></i>
+                <div class="no-data-text"
+                     th:text="'No academic reports found for ' + ${person.name} + ' ' + ${person.surname}">
+                    No academic reports found
+                </div>
+            </div>
+        </div>
+
         <div th:unless="${#lists.isEmpty(academic_reports)}">
-            <table class="table table-bordered table-success">
+            <table class="table fancy-table academic-table">
                 <thead>
                 <tr>
                     <th>Report ID</th>
                     <th>Description</th>
                     <th>Field</th>
                     <th>Institution</th>
-                    <th>Institution Address</th>
-                    <th>Established At</th>
+                    <th>Address</th>
+                    <th>Established</th>
                 </tr>
                 </thead>
                 <tbody>
-
                 <tr th:each="report : ${academic_reports}">
-                    <td th:text="${report.reportId}"></td>
+                    <td><strong th:text="${report.reportId}"></strong></td>
                     <td th:text="${report.descriptionOfReport}"></td>
-                    <td th:text="${report.academicField}"></td>
+                    <td>
+                        <span class="badge bg-primary" th:text="${report.academicField}"></span>
+                    </td>
                     <td th:text="${report.institutionName} + ' - ' + ${report.institutionType}"></td>
                     <td th:text="${report.institutionAddress}"></td>
                     <td th:text="${report.yearEstablished}"></td>
@@ -144,29 +489,46 @@
 
     <!-- Employment Reports -->
     <div class="report-section">
-        <h4>Employment Reports—(total --> <span class="badge bg-secondary-subtle text-dark"
-                                                th:text="${employment_reports.size()}"></span>)</h4>
-        <div th:if="${#lists.isEmpty(employment_reports)}">
-            <h5 th:text="'No employment report exists for ' + ${person.name} + ' ' + ${person.surname}"></h5>
+        <div class="section-header employment-header">
+            <div class="section-icon employment-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div>
+                <h2 class="section-title">Employment Reports</h2>
+                <p class="mb-0 text-muted">Professional work history and employment records</p>
+            </div>
         </div>
+
+        <div th:if="${#lists.isEmpty(employment_reports)}">
+            <div class="no-data">
+                <i class="fas fa-building no-data-icon"></i>
+                <div class="no-data-text"
+                     th:text="'No employment reports found for ' + ${person.name} + ' ' + ${person.surname}">
+                    No employment reports found
+                </div>
+            </div>
+        </div>
+
         <div th:unless="${#lists.isEmpty(employment_reports)}">
-            <table class="table table-bordered table-info">
+            <table class="table fancy-table employment-table">
                 <thead>
                 <tr>
                     <th>Report ID</th>
                     <th>Job Role</th>
-                    <th>Start Date</th>
+                    <th>Duration</th>
                     <th>Income</th>
                     <th>Summary</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="report : ${employment_reports}">
-                    <td th:text="${report.reportId}"></td>
+                    <td><strong th:text="${report.reportId}"></strong></td>
                     <td th:text="${report.jobRole}"></td>
-                    <td th:text="${#temporals.format(report.startDate, 'dd.MM.yyyy') + ' - ' + (report.endDate != null ? #temporals.format(report.endDate, 'dd.MM.yyyy') : 'Still working there')}"></td>
-                    <td><span class="fst-italic"
-                              th:text="|${report.incomePerMonth} euros (${#numbers.formatDecimal(report.incomePerMonth * 61.5, 0, 2)} denars)|"></span>
+                    <td th:text="${#temporals.format(report.startDate, 'dd.MM.yyyy') + ' - ' + (report.endDate != null ? #temporals.format(report.endDate, 'dd.MM.yyyy') : 'Present')}"></td>
+                    <td>
+                        <div class="fw-bold text-success" th:text="${report.incomePerMonth} + ' €'"></div>
+                        <small class="text-muted"
+                               th:text="${#numbers.formatDecimal(report.incomePerMonth * 61.5, 0, 2)} + ' MKD'"></small>
                     </td>
                     <td th:text="${report.summary}"></td>
                 </tr>
@@ -177,42 +539,190 @@
 
     <!-- Medical Reports -->
     <div class="report-section">
-        <h4>Medical Reports—(total --> <span class="badge bg-secondary-subtle text-dark"
-                                             th:text="${medical_reports.size()}"></span>)</h4>
-        <div th:if="${#lists.isEmpty(medical_reports)}">
-            <h5 th:text="'No medical report exists for ' + ${person.name} + ' ' + ${person.surname}"></h5>
+        <div class="section-header medical-header">
+            <div class="section-icon medical-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div>
+                <h2 class="section-title">Medical Reports</h2>
+                <p class="mb-0 text-muted">Health records and medical history</p>
+            </div>
         </div>
+
+        <div th:if="${#lists.isEmpty(medical_reports)}">
+            <div class="no-data">
+                <i class="fas fa-stethoscope no-data-icon"></i>
+                <div class="no-data-text"
+                     th:text="'No medical reports found for ' + ${person.name} + ' ' + ${person.surname}">
+                    No medical reports found
+                </div>
+            </div>
+        </div>
+
         <div th:unless="${#lists.isEmpty(medical_reports)}">
-            <table class="table table-bordered table-danger">
+            <table class="table fancy-table medical-table">
                 <thead>
                 <tr>
                     <th>Report ID</th>
                     <th>Doctor</th>
                     <th>Next Control</th>
                     <th>Summary</th>
-                    <th>Diagnosis Description</th>
+                    <th>Diagnosis</th>
                     <th>Therapy</th>
                     <th>Severity</th>
-                    <th>Is it Chronic</th>
+                    <th>Chronic</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="report : ${medical_reports}">
-                    <td th:text="${report.reportId}"></td>
-                    <td th:text="${'Dr. ' + report.doctorName + ' ' + report.doctorSurname}">Doctor Name</td>
+                    <td><strong th:text="${report.reportId}"></strong></td>
+                    <td th:text="'Dr. ' + ${report.doctorName} + ' ' + ${report.doctorSurname}"></td>
                     <td th:text="${report.nextControlDate != null ? #temporals.format(report.nextControlDate, 'dd.MM.yyyy') : 'Not scheduled'}"></td>
                     <td th:text="${report.summary}"></td>
-                    <td th:text="${report.shortDescription} ? ${report.shortDescription} : 'no diagnosis given'"></td>
-                    <td th:text="${report.therapy} ? ${report.therapy} : 'no diagnosis given'"></td>
-                    <td th:text="${report.severity} ? ${report.severity.name()} : 'no diagnosis given'"></td>
-                    <td th:text="${report.isChronic} ? 'Yes' : 'No'"></td>
+                    <td th:text="${report.shortDescription ?: 'No diagnosis given'}"></td>
+                    <td th:text="${report.therapy ?: 'No therapy prescribed'}"></td>
+                    <td>
+                        <span th:if="${report.severity}" class="badge bg-warning"
+                              th:text="${report.severity.name()}"></span>
+                        <span th:unless="${report.severity}" class="badge bg-secondary">Not specified</span>
+                    </td>
+                    <td>
+                                <span th:if="${report.isChronic}" class="badge bg-danger">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Yes
+                                </span>
+                        <span th:unless="${report.isChronic}" class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>No
+                                </span>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <a th:href="@{/}" class="btn btn-secondary">Back to Dashboard</a>
 
+    <!-- Statistics Section -->
+    <div class="statistics-section">
+        <h2 class="statistics-title">
+            <i class="fas fa-chart-bar me-3"></i>
+            Report Summary Statistics
+        </h2>
+
+        <div class="stats-grid">
+            <!-- General Statistics -->
+            <div class="stat-card">
+                <h3 class="stat-card-title">
+                    <i class="fas fa-chart-pie me-2"></i>General Overview
+                </h3>
+                <div class="stat-row">
+                    <span class="stat-label">Total Reports</span>
+                    <span class="stat-value" th:text="${statistics.totalReportsFound ?: 'N/A'}">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">First Report Date</span>
+                    <span class="stat-value" th:text="${statistics.firstReportOfPerson ?: 'N/A'}">N/A</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Latest Report Date</span>
+                    <span class="stat-value" th:text="${statistics.latestReportOfPerson ?: 'N/A'}">N/A</span>
+                </div>
+            </div>
+
+            <!-- Academic Statistics -->
+            <div class="stat-card">
+                <h3 class="stat-card-title">
+                    <i class="fas fa-graduation-cap me-2"></i>Academic Summary
+                </h3>
+                <div class="stat-row">
+                    <span class="stat-label">Total Academic Reports</span>
+                    <span class="stat-value" th:text="${statistics.academicTotal ?: 'N/A'}">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Most Common Field</span>
+                    <span class="stat-value" th:text="${statistics.mostCommonField ?: 'N/A'}">N/A</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Education Path</span>
+                    <span class="stat-value" th:text="${statistics.educationPath ?: 'N/A'}">N/A</span>
+                </div>
+            </div>
+
+            <!-- Employment Statistics -->
+            <div class="stat-card">
+                <h3 class="stat-card-title">
+                    <i class="fas fa-briefcase me-2"></i>Employment Summary
+                </h3>
+                <div class="stat-row">
+                    <span class="stat-label">Total Jobs</span>
+                    <span class="stat-value" th:text="${statistics.jobCount ?: 'N/A'}">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Working Days</span>
+                    <span class="stat-value" th:text="${statistics.totalWorkingInDays ?: 'N/A'}">N/A</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Working Months</span>
+                    <span class="stat-value" th:text="${statistics.totalWorkingInMonths ?: 'N/A'}">N/A</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Working Years</span>
+                    <span class="stat-value" th:text="${statistics.totalWorkingInYears ?: 'N/A'}">N/A</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Longest Job (days)</span>
+                    <span class="stat-value" th:text="${statistics.longestJobDays ?: 'N/A'}">N/A</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Max Monthly Income</span>
+                    <span class="stat-value"
+                          th:text="${statistics.maxIncomeFromJob != null ? statistics.maxIncomeFromJob + ' €' : 'N/A'}">N/A</span>
+                </div>
+            </div>
+
+            <!-- Medical Statistics -->
+            <div class="stat-card">
+                <h3 class="stat-card-title">
+                    <i class="fas fa-heartbeat me-2"></i>Medical Summary
+                </h3>
+                <div class="stat-row">
+                    <span class="stat-label">Total Diagnoses</span>
+                    <span class="stat-value" th:text="${statistics.diagnosisTotal ?: 'N/A'}">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Chronic Condition Ratio</span>
+                    <span class="stat-value" th:text="${statistics.chronicRatio ?: 'N/A'}">N/A</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Most Frequent Diagnosis</span>
+                    <span class="stat-value" th:text="${statistics.mostFrequentDiagnosis ?: 'N/A'}">N/A</span>
+                </div>
+            </div>
+
+            <!-- Criminal Statistics -->
+            <div class="stat-card">
+                <h3 class="stat-card-title">
+                    <i class="fas fa-gavel me-2"></i>Criminal Summary
+                </h3>
+                <div class="stat-row">
+                    <span class="stat-label">Total Criminal Reports</span>
+                    <span class="stat-value" th:text="${statistics.criminalCaseTotal ?: 'N/A'}">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Resolution Ratio</span>
+                    <span class="stat-value" th:text="${statistics.resolutionRatio ?: 'N/A'}">N/A</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+        <a th:href="@{/}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

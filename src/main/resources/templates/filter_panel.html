@@ -54,7 +54,8 @@
         </div>
     </form>
     <form th:action="@{/advanced_filter_pt2}" th:method="post" th:object="${filter}">
-        <div id="person_filter" class="mb-4" th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).PERSON}">
+        <div id="person_filter" class="mb-4"
+             th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).PERSON}">
             <h3 class="text-center px-4 py-3 bg-dark text-white fw-bolder rounded">Advanced Filtering Page</h3>
             <hr class="my-4 border-dark">
             <h4 class="fw-bold mb-3">Person</h4>
@@ -140,7 +141,8 @@
             </div>
         </div>
 
-        <div class="mb-4" id="academic_filter" th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).ACADEMIC}">
+        <div class="mb-4" id="academic_filter"
+             th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).ACADEMIC}">
             <hr class="my-4">
             <div class="row d-flex">
                 <!-- Academic Report -->
@@ -164,7 +166,8 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4" id="employment_filter" th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).EMPLOYMENT}">
+        <div class="mb-4" id="employment_filter"
+             th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).EMPLOYMENT}">
             <!-- Employment Report -->
             <div class="col-6">
                 <h4 class="fw-bold mb-3">Employment Report</h4>
@@ -213,7 +216,8 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4" id="criminal_filter" th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).CRIMINAL}">
+        <div class="mb-4" id="criminal_filter"
+             th:if="${choice == T(apps.spring.reportium.entity.enumerations.SelectedFilterSection).CRIMINAL}">
             <!-- Criminal Report -->
             <hr class="my-4">
             <h4 class="fw-bold mb-3">Criminal Report</h4>
