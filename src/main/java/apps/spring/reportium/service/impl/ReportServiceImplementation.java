@@ -2,6 +2,7 @@ package apps.spring.reportium.service.impl;
 
 import apps.spring.reportium.entity.DTOs.*;
 import apps.spring.reportium.entity.EmploymentReport;
+import apps.spring.reportium.entity.Institution;
 import apps.spring.reportium.entity.Report;
 import apps.spring.reportium.repository.ReportRepository;
 import apps.spring.reportium.service.ReportService;
@@ -103,5 +104,26 @@ public class ReportServiceImplementation implements ReportService {
 
 
     }
+
+    @Override
+    public void saveNewAcademicReport(Long personId,
+                                      Long institution_id,
+                                      String academicField,
+                                      String descriptionOfReport) {
+        System.out.println("Calling stored procedure with:");
+        System.out.println("personId = " + personId);
+        System.out.println("institution_id = " + institution_id);
+        System.out.println("academicField = " + academicField);
+        System.out.println("descriptionOfReport = " + descriptionOfReport);
+
+        jdbcTemplate.update(
+                "CALL insert_academic_report(?::INT, ?::INT, ?::TEXT, ?::TEXT)",
+                personId,
+                institution_id, // assuming Institution has getInstitutionId()
+                academicField,
+                descriptionOfReport
+        );
+    }
+
 
 }

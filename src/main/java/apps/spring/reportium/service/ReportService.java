@@ -2,6 +2,7 @@ package apps.spring.reportium.service;
 
 import apps.spring.reportium.entity.DTOs.*;
 import apps.spring.reportium.entity.EmploymentReport;
+import apps.spring.reportium.entity.Institution;
 import apps.spring.reportium.entity.Report;
 import org.springframework.data.domain.Page;
 
@@ -20,4 +21,5 @@ public interface ReportService {
     List<Report> getReportsByAdvancedFilter(ReportFilterDTO filter);
 
     void saveNewEmploymentReport(Long personId, LocalDate startDate, LocalDate endDate,String jobRole, BigDecimal income, String summary);
+    void saveNewAcademicReport(Long personId, Long institution_id, String academicField, String descriptionOfReport);
 }

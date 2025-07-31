@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Employment Report</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add New Academic Report</title>
     <style>
         :root {
             --light-gray: #f8f9fa;
@@ -17,6 +17,8 @@
             background: linear-gradient(135deg, var(--light-gray) 0%, #e9ecef 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
         }
 
         .form-container {
@@ -53,6 +55,7 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
             font-size: 0.95rem;
+            display: block;
         }
 
         .form-control {
@@ -62,6 +65,8 @@
             font-size: 1rem;
             transition: all 0.3s ease;
             background-color: var(--light-gray);
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .form-control:focus {
@@ -75,6 +80,19 @@
             color: #6c757d;
         }
 
+        .form-control:hover {
+            background-color: white;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
         .btn-primary {
             background: linear-gradient(45deg, var(--blue) 0%, var(--dark-blue) 100%);
             border: none;
@@ -85,6 +103,9 @@
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
         }
 
         .btn-primary:hover {
@@ -104,6 +125,8 @@
             text-decoration: none;
             display: inline-block;
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+            cursor: pointer;
+            font-size: 1rem;
         }
 
         .btn-secondary:hover {
@@ -137,7 +160,7 @@
             flex-wrap: wrap;
         }
 
-        .summary-counter {
+        .description-counter {
             text-align: right;
             font-size: 0.85rem;
             color: #6c757d;
@@ -145,8 +168,12 @@
         }
 
         @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+
             .form-container {
-                margin: 1rem;
+                margin: 1rem auto;
                 padding: 1.5rem;
             }
 
@@ -158,58 +185,46 @@
                 width: 100%;
             }
         }
-
-        .form-control:hover {
-            background-color: white;
-        }
     </style>
 </head>
-<body class="container py-4">
+<body>
 <div class="form-container">
-    <h1 class="form-title">Employment Report</h1>
+    <h2 class="form-title">Academic Report</h2>
 
-    <form th:action="@{/reports/add/employment}" method="post">
+    <form th:action="@{/reports/add/academic}" method="post">
         <!-- Hidden person ID -->
-        <input type="hidden" name="personId" th:value="${person.getPersonId()}"/>
+        <input type="hidden" name="personId" th:value="${person.personId}" />
 
-        <!-- Start Date -->
+        <!-- Institution -->
         <div class="form-group">
-            <label for="startDate" class="form-label">Start Date</label>
-            <input type="date" class="form-control" name="startDate" id="startDate" required>
+            <label for="institutionId" class="form-label">Institution</label>
+            <select name="institutionId" id="institutionId" class="form-control" required>
+                <option value="">Select an institution</option>
+                <option th:each="inst : ${institutions}"
+                        th:value="${inst.institutionId}"
+                        th:text="${inst.name}">
+                </option>
+            </select>
         </div>
 
-        <!-- End Date -->
+        <!-- Academic Field -->
         <div class="form-group">
-            <label for="endDate" class="form-label">End Date</label>
-            <input type="date" class="form-control" name="endDate" id="endDate">
-            <small class="text-muted">Leave empty if currently employed</small>
+            <label for="academicField" class="form-label">Academic Field</label>
+            <input type="text" name="academicField" id="academicField" class="form-control" required
+                   placeholder="e.g., Computer Science, Mathematics, Psychology" />
         </div>
 
-        <!-- Job Role -->
+        <!-- Description -->
         <div class="form-group">
-            <label for="jobRole" class="form-label">Job Role</label>
-            <input type="text" class="form-control" name="jobRole" id="jobRole" required
-                   placeholder="e.g., Software Developer, Marketing Manager">
-        </div>
-
-        <!-- Income -->
-        <div class="form-group income-symbol">
-            <label for="income" class="form-label">Monthly Income (in euros)</label>
-            <input min="1" type="number" step="0.01" class="form-control" name="income" id="income" required
-                   placeholder="Enter amount" style="padding-right: 40px;">
-        </div>
-
-        <!-- Report Summary -->
-        <div class="form-group">
-            <label for="summary" class="form-label">Report Summary</label>
-            <textarea class="form-control" name="summary" id="summary" rows="4" required
-                      placeholder="Write a brief summary of the employment details, responsibilities, achievements, etc."
-                      maxlength="500" oninput="updateCounter()"></textarea>
-            <div class="summary-counter" id="charCounter">0 / 500 characters</div>
+            <label for="descriptionOfReport" class="form-label">Description of Report</label>
+            <textarea name="descriptionOfReport" id="descriptionOfReport" class="form-control" rows="4" required
+                      placeholder="Provide a detailed description of the academic report, including key findings, methodology, or achievements..."
+                      maxlength="1000" oninput="updateCounter()"></textarea>
+            <div class="description-counter" id="charCounter">0 / 1000 characters</div>
         </div>
 
         <div class="button-group">
-            <button type="submit" class="btn btn-primary">Submit Report</button>
+            <button type="submit" class="btn-primary">Submit Report</button>
             <a th:href="@{/{id}(id=${person.getPersonId()})}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
@@ -217,7 +232,7 @@
 
 <script>
     function updateCounter() {
-        const textarea = document.getElementById('summary');
+        const textarea = document.getElementById('descriptionOfReport');
         const counter = document.getElementById('charCounter');
         const current = textarea.value.length;
         const max = textarea.getAttribute('maxlength');
@@ -232,7 +247,6 @@
         }
     }
 
-    // Initialize counter on page load
     document.addEventListener('DOMContentLoaded', function() {
         updateCounter();
     });
