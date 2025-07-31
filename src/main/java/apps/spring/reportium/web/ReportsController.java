@@ -1,7 +1,11 @@
 package apps.spring.reportium.web;
+import apps.spring.reportium.entity.CrimeType;
 import apps.spring.reportium.entity.Institution;
 import apps.spring.reportium.entity.Person;
 import apps.spring.reportium.entity.Report;
+import apps.spring.reportium.entity.enumerations.PunishmentType;
+import apps.spring.reportium.entity.enumerations.ValueUnit;
+import apps.spring.reportium.repository.CrimeTypeRepository;
 import apps.spring.reportium.repository.InstitutionRepository;
 import apps.spring.reportium.service.PersonService;
 import apps.spring.reportium.service.ReportService;
@@ -20,10 +24,12 @@ public class ReportsController {
     private final ReportService reportService;
     private final PersonService personService;
     private final InstitutionRepository institutionRepository;
-    public ReportsController(ReportService reportService, PersonService personService, InstitutionRepository institutionRepository) {
+    private final CrimeTypeRepository crimeTypeRepository;
+    public ReportsController(ReportService reportService, PersonService personService, InstitutionRepository institutionRepository, CrimeTypeRepository crimeTypeRepository) {
         this.reportService = reportService;
         this.personService = personService;
         this.institutionRepository = institutionRepository;
+        this.crimeTypeRepository = crimeTypeRepository;
     }
     @GetMapping
     public String listReports(Model model,
@@ -81,10 +87,33 @@ public class ReportsController {
     }
     @PostMapping("/add/academic")
     public String submitAcademicData(@RequestParam Long personId,
-                                       @RequestParam Long institutionId,
-                                       @RequestParam String academicField,
-                                       @RequestParam String descriptionOfReport) {
+                                     @RequestParam Long institutionId,
+                                     @RequestParam String academicField,
+                                     @RequestParam String descriptionOfReport) {
         reportService.saveNewAcademicReport(personId, institutionId, academicField, descriptionOfReport);
+        return "redirect:/" + personId;
+    }
+
+
+    @GetMapping("/add/criminal")
+    public String createCriminalReport(@RequestParam Long personId, Model model) {
+        Person person = personService.findById(personId.intValue());
+        model.addAttribute("person", person);
+        model.addAttribute("punishmentTypes", PunishmentType.values());
+        model.addAttribute("crimeTypes", crimeTypeRepository.findAll());
+        return "new_criminal_report";
+    }
+
+    @PostMapping("/add/criminal")
+    public String submitCriminalData(@RequestParam Long personId,
+                                     @RequestParam String caseSummary,
+                                     @RequestParam String location,
+                                     @RequestParam Boolean isResolved,
+                                     @RequestParam Long crimeTypeId,
+                                     @RequestParam PunishmentType punishmentType,
+                                     @RequestParam (required = false) Double fineToPay,
+                                     @RequestParam (required = false) LocalDate releaseDate) {
+        reportService.saveNewCriminalReport(personId, caseSummary, location, isResolved, crimeTypeId, punishmentType, fineToPay, releaseDate);
         return "redirect:/" + personId;
     }
    //TODO("Same as Employment, but for Medical, Academic and Criminal Report to be added.")

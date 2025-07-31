@@ -1,23 +1,19 @@
 package apps.spring.reportium.service.impl;
 
 import apps.spring.reportium.entity.DTOs.*;
-import apps.spring.reportium.entity.EmploymentReport;
-import apps.spring.reportium.entity.Institution;
 import apps.spring.reportium.entity.Report;
+import apps.spring.reportium.entity.enumerations.PunishmentType;
+import apps.spring.reportium.entity.enumerations.ValueUnit;
 import apps.spring.reportium.repository.ReportRepository;
 import apps.spring.reportium.service.ReportService;
 import apps.spring.reportium.specifications.ReportFilterSpecificationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+
 public class ReportServiceImplementation implements ReportService {
     private final ReportRepository reportRepository;
     @Autowired
@@ -122,6 +119,30 @@ public class ReportServiceImplementation implements ReportService {
                 institution_id, // assuming Institution has getInstitutionId()
                 academicField,
                 descriptionOfReport
+        );
+    }
+
+    @Override
+    public void saveNewCriminalReport(Long personId, String caseSummary, String location, Boolean isResolved, Long crimeTypeId, PunishmentType punishmentType, Double fineToPay, LocalDate releaseDate) {
+        System.out.println("Calling stored procedure with:");
+        System.out.println("personId = " + personId);
+        System.out.println("caseSummary = " + caseSummary);
+        System.out.println("location = " + location);
+        System.out.println("isResolved = " + isResolved);
+        System.out.println("crimeTypeId = " + crimeTypeId);
+        System.out.println("punishmentType = " + punishmentType);
+        System.out.println("fineToPay = " + fineToPay);
+        System.out.println("releaseDate = " + releaseDate);
+        jdbcTemplate.update(
+                "CALL insert_criminal_report(?::INT, ?::TEXT, ?::TEXT, ?::BOOLEAN, ?::INT, ?::TEXT, ?::NUMERIC, ?::DATE)",
+                personId,
+                caseSummary,
+                location,
+                isResolved,
+                crimeTypeId,
+                punishmentType.name(),
+                fineToPay,
+                releaseDate
         );
     }
 
