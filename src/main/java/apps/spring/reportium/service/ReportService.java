@@ -15,15 +15,24 @@ import java.util.List;
 
 public interface ReportService {
     List<Report> findAll();
+
     List<AcademicReportPerPersonDTO> getAcademicReports(Long personId);
+
     List<MedicalReportPerPersonDTO> getMedicalReports(Long personId);
+
     List<EmploymentReportPerPersonDTO> getEmploymentReports(Long personId);
+
     List<CrimeReportPerPersonDTO> getCriminalReports(Long personId);
-//    Page<Report> findPage(Integer reportId, Integer pageNum, Integer pageSize);
+
     Page<Report> findPaginatedReports(int page, int size, String sortField, String sortDir);
+
     List<Report> getReportsByAdvancedFilter(ReportFilterDTO filter);
 
-    void saveNewEmploymentReport(Long personId, LocalDate startDate, LocalDate endDate,String jobRole, BigDecimal income, String summary);
+    void saveNewEmploymentReport(Long personId, LocalDate startDate, LocalDate endDate, String jobRole, BigDecimal income, String summary);
+
     void saveNewAcademicReport(Long personId, Long institution_id, String academicField, String descriptionOfReport);
+
     void saveNewCriminalReport(Long personId, String caseSummary, String location, Boolean isResolved, Long crimeTypeId, PunishmentType punishmentType, Double fineToPay, LocalDate releaseDate);
+
+    void saveNewMedicalReport(Long personId, String summary, Long doctorId, LocalDate nextControlDate, List<Long> diagnosisIds);
 }

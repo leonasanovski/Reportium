@@ -15,15 +15,15 @@ DECLARE
     new_report_id     INT;
     new_punishment_id INT;
 BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM person WHERE person_id = param_person_id
-    ) THEN
+    IF NOT EXISTS (SELECT 1
+                   FROM person
+                   WHERE person_id = param_person_id) THEN
         RAISE EXCEPTION 'Person with ID % does not exist', param_person_id;
     END IF;
 
-    IF NOT EXISTS (
-        SELECT 1 FROM crimetype WHERE crime_type_id = param_crime_type_id
-    ) THEN
+    IF NOT EXISTS (SELECT 1
+                   FROM crimetype
+                   WHERE crime_type_id = param_crime_type_id) THEN
         RAISE EXCEPTION 'CrimeType with ID % does not exist', param_crime_type_id;
     END IF;
 

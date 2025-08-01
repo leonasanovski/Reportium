@@ -3,6 +3,7 @@ package apps.spring.reportium.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 /*
@@ -23,6 +24,7 @@ CREATE TABLE MedicalReport_Diagnosis (
                 @UniqueConstraint(columnNames = {"report_id", "diagnosis_id"}, name = "unique_report_diagnosis")
         }
 )
+@NoArgsConstructor
 public class MedicalReportDiagnosis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +40,5 @@ public class MedicalReportDiagnosis {
 
     @Column(name = "added_on")
     private LocalDate addedOn = LocalDate.now();
+
 }

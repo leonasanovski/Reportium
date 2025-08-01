@@ -17,8 +17,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 
@@ -80,15 +84,6 @@ public class ReportServiceImplementation implements ReportService {
                                         String jobRole,
                                         BigDecimal income,
                                         String summary) {
-
-        System.out.println("Calling stored procedure with:");
-        System.out.println("personId = " + personId);
-        System.out.println("startDate = " + startDate);
-        System.out.println("endDate = " + endDate);
-        System.out.println("jobRole = " + jobRole);
-        System.out.println("income = " + income);
-        System.out.println("summary = " + summary);
-
         jdbcTemplate.update(
                 "CALL insert_employment_report(?::integer, ?::date, ?::date, ?::text, ?::numeric, ?::text)",
                 personId,
@@ -107,12 +102,6 @@ public class ReportServiceImplementation implements ReportService {
                                       Long institution_id,
                                       String academicField,
                                       String descriptionOfReport) {
-        System.out.println("Calling stored procedure with:");
-        System.out.println("personId = " + personId);
-        System.out.println("institution_id = " + institution_id);
-        System.out.println("academicField = " + academicField);
-        System.out.println("descriptionOfReport = " + descriptionOfReport);
-
         jdbcTemplate.update(
                 "CALL insert_academic_report(?::INT, ?::INT, ?::TEXT, ?::TEXT)",
                 personId,
@@ -124,15 +113,6 @@ public class ReportServiceImplementation implements ReportService {
 
     @Override
     public void saveNewCriminalReport(Long personId, String caseSummary, String location, Boolean isResolved, Long crimeTypeId, PunishmentType punishmentType, Double fineToPay, LocalDate releaseDate) {
-        System.out.println("Calling stored procedure with:");
-        System.out.println("personId = " + personId);
-        System.out.println("caseSummary = " + caseSummary);
-        System.out.println("location = " + location);
-        System.out.println("isResolved = " + isResolved);
-        System.out.println("crimeTypeId = " + crimeTypeId);
-        System.out.println("punishmentType = " + punishmentType);
-        System.out.println("fineToPay = " + fineToPay);
-        System.out.println("releaseDate = " + releaseDate);
         jdbcTemplate.update(
                 "CALL insert_criminal_report(?::INT, ?::TEXT, ?::TEXT, ?::BOOLEAN, ?::INT, ?::TEXT, ?::NUMERIC, ?::DATE)",
                 personId,
@@ -144,6 +124,25 @@ public class ReportServiceImplementation implements ReportService {
                 fineToPay,
                 releaseDate
         );
+    }
+
+    @Override
+    public void saveNewMedicalReport(Long personId, String summary, Long doctorId, LocalDate nextControlDate, List<Long> diagnosisIds) {
+        try (Connection conn = Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection()) {
+            Array diagnosisArray = conn.createArrayOf("INTEGER",
+                    diagnosisIds != null ? diagnosisIds.toArray(new Long[0]) : new Long[0]);
+
+            jdbcTemplate.update(
+                    "CALL insert_medical_report(?::INT, ?::TEXT, ?::INT, ?::DATE, ?::INT[])",
+                    personId,
+                    summary,
+                    doctorId,
+                    nextControlDate,
+                    diagnosisArray
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException("Error executing insert_medical_report", e);
+        }
     }
 
 

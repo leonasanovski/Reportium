@@ -3,6 +3,8 @@ package apps.spring.reportium.entity;
 import apps.spring.reportium.entity.enumerations.SeverityLevel;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /*
 create table Diagnosis(
     diagnosis_id serial primary key,
@@ -16,11 +18,12 @@ create table Diagnosis(
 @Data
 @Entity
 @Table(name = "Diagnosis")
+@NoArgsConstructor
 public class Diagnosis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diagnosis_id")
-    private int diagnosisId;
+    private Integer diagnosisId;
 
     @Column(nullable = false, name = "short_description", columnDefinition = "TEXT")
     private String shortDescription;
@@ -34,4 +37,11 @@ public class Diagnosis {
     @Column(name = "severity", nullable = false)
     @Enumerated(EnumType.STRING)
     private SeverityLevel severityLevel;
+
+    public Diagnosis(String shortDescription, String therapy, boolean isChronic, SeverityLevel severityLevel) {
+        this.shortDescription = shortDescription;
+        this.therapy = therapy;
+        this.isChronic = isChronic;
+        this.severityLevel = severityLevel;
+    }
 }

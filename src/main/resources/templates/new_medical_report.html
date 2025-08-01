@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add New Medical Report</title>
+    <style>
+        :root {
+            --light-gray: #f8f9fa;
+            --blue: #007bff;
+            --yellow: #ffc107;
+            --dark-blue: #0056b3;
+            --light-blue: #e3f2fd;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-gray) 0%, #e9ecef 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--blue) 0%, var(--yellow) 100%);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .form-title {
+            color: var(--dark-blue);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-label {
+            color: var(--dark-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            display: block;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--light-gray);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            background-color: white;
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+
+        .form-control:hover {
+            background-color: white;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--blue) 0%, var(--dark-blue) 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--dark-blue) 0%, var(--blue) 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--yellow) 0%, #e0a800 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #333;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #e0a800 0%, var(--yellow) 100%);
+            color: #333;
+            text-decoration: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--blue);
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            color: var(--blue);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-outline:hover {
+            background: var(--blue);
+            color: white;
+            text-decoration: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--yellow);
+            border-radius: 1px;
+            opacity: 0.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .summary-counter {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group {
+            background: var(--light-gray);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: white;
+        }
+
+        .checkbox-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.75rem;
+            accent-color: var(--blue);
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            color: var(--dark-blue);
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .section-title {
+            color: var(--dark-blue);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+
+            .form-container {
+                margin: 1rem auto;
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary, .btn-outline {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        function updateCounter() {
+            const textarea = document.getElementById('summary');
+            const counter = document.getElementById('charCounter');
+            const current = textarea.value.length;
+            const max = textarea.getAttribute('maxlength');
+            counter.textContent = `${current} / ${max} characters`;
+
+            if (current > max * 0.9) {
+                counter.style.color = '#dc3545';
+            } else if (current > max * 0.7) {
+                counter.style.color = '#ffc107';
+            } else {
+                counter.style.color = '#6c757d';
+            }
+        }
+
+        // Initialize counter on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounter();
+        });
+    </script>
+</head>
+<body>
+<div class="form-container">
+    <h2 class="form-title">Medical Report</h2>
+
+    <form th:action="@{/reports/add/medical}" method="post">
+        <input type="hidden" name="personId" th:value="${person.personId}"/>
+
+        <!-- Summary -->
+        <div class="form-group">
+            <label for="summary" class="form-label">Medical Case Description</label>
+            <textarea id="summary" name="summary" class="form-control" rows="4" required
+                      maxlength="800" placeholder="Provide a detailed description of the medical case, symptoms, treatment, and any relevant medical history..."
+                      oninput="updateCounter()"></textarea>
+            <div class="summary-counter" id="charCounter">0 / 800 characters</div>
+        </div>
+
+        <!-- Next Appointment -->
+        <div class="form-group">
+            <label for="nextControlDate" class="form-label">Next Appointment Date</label>
+            <input type="date" id="nextControlDate" name="nextControlDate" class="form-control">
+            <div class="help-text">Optional: Schedule follow-up appointment</div>
+        </div>
+
+        <!-- Doctor -->
+        <div class="form-group">
+            <label for="doctorId" class="form-label">Attending Doctor</label>
+            <select name="doctorId" id="doctorId" class="form-control" required>
+                <option value="" disabled selected>Select a doctor</option>
+                <option th:each="doc : ${doctors}"
+                        th:value="${doc.doctorId}"
+                        th:text="${doc.name + ' ' + doc.surname + ' - ' + doc.specialization.toString()}"></option>
+            </select>
+        </div>
+
+        <!-- Diagnoses -->
+        <div class="form-group">
+            <div class="section-title">Select Diagnoses</div>
+            <div class="checkbox-group">
+                <div th:each="diag : ${diagnoses}" class="checkbox-item">
+                    <input type="checkbox"
+                           name="diagnosisIds"
+                           th:value="${diag.diagnosisId}"
+                           th:id="${'diag-' + diag.diagnosisId}"/>
+                    <label th:for="${'diag-' + diag.diagnosisId}" th:text="${diag.shortDescription}">Diagnosis</label>
+                </div>
+            </div>
+            <!-- Add Diagnosis Button -->
+            <div style="text-align: center; margin-top: 1rem;">
+                <a th:href="@{/diagnosis/create(personId=${person.getPersonId()})}" class="btn-outline">
+                    + Add New Diagnosis
+                </a>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-primary">Submit Medical Report</button>
+            <a th:href="@{/{id}(id=${person.getPersonId()})}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
