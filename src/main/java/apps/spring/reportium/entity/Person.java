@@ -60,6 +60,9 @@ public class Person {
     @Column(name = "contact_phone", nullable = false)
     private String contactPhone;
 
+    @Column(name = "is_stub", nullable = false)
+    private boolean stub = false;
+
     @Override
     public String toString() {
         return name + ' ' + surname;

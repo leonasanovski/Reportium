@@ -1,9 +1,9 @@
 package apps.spring.reportium.web;
 
-import apps.spring.reportium.entity.DTOs.view_fetching_dtos.AcademicReportViewFetchingDTO;
-import apps.spring.reportium.entity.DTOs.view_fetching_dtos.CrimeReportViewFetchingDTO;
-import apps.spring.reportium.entity.DTOs.view_fetching_dtos.EmploymentReportViewFetchingDTO;
-import apps.spring.reportium.entity.DTOs.view_fetching_dtos.MedicalReportViewFetchingDTO;
+import apps.spring.reportium.entity.dto.view_fetching_dtos.AcademicReportViewFetchingDTO;
+import apps.spring.reportium.entity.dto.view_fetching_dtos.CrimeReportViewFetchingDTO;
+import apps.spring.reportium.entity.dto.view_fetching_dtos.EmploymentReportViewFetchingDTO;
+import apps.spring.reportium.entity.dto.view_fetching_dtos.MedicalReportViewFetchingDTO;
 import apps.spring.reportium.repository.ReportViewRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

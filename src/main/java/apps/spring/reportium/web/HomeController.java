@@ -1,15 +1,14 @@
 package apps.spring.reportium.web;
 
 import apps.spring.reportium.entity.*;
-import apps.spring.reportium.entity.DTOs.*;
+import apps.spring.reportium.entity.dto.*;
 import apps.spring.reportium.entity.exceptions.PersonNotFoundException;
 import apps.spring.reportium.repository.ReportRepository;
 import apps.spring.reportium.service.PersonService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +29,14 @@ public class HomeController {
         model.addAttribute("report_summary_list", report_summary);
         return "home";
     }
+
+    @PostMapping("/{id}/delete")
+    public String deletePerson(@PathVariable Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        personService.deletePerson(email, id);
+        return "redirect:/";
+    }
+
     @GetMapping("/{id}")
     public String viewPersonReports(@PathVariable("id") Long personId, Model model) {
         Person person = personService.findById(Math.toIntExact(personId));
@@ -41,12 +48,13 @@ public class HomeController {
         List<AcademicReportPerPersonDTO> person_ar = reportRepository.getAcademicReportsByPersonId(personId);
         List<EmploymentReportPerPersonDTO> person_er = reportRepository.getEmploymentReportsByPersonId(personId);
         ReportStatisticsPerPersonDTO statistics_per_person = reportRepository.getStatisticsForPerson(personId);
-        System.out.println(statistics_per_person);
+        List<DiagnosisSimilarityPerPersonDTO> diagnosis_similarity = reportRepository.getSimilarDiagnosesForPerson(personId);
         model.addAttribute("medical_reports", person_mr);
         model.addAttribute("criminal_reports", person_cr);
         model.addAttribute("academic_reports", person_ar);
         model.addAttribute("employment_reports", person_er);
         model.addAttribute("statistics", statistics_per_person);
+        model.addAttribute("diagnosis_similarities", diagnosis_similarity);
         model.addAttribute("person", person);
         return "person_reports";
     }

@@ -1,31 +1,19 @@
 package apps.spring.reportium.specifications;
 
 import apps.spring.reportium.entity.*;
-import apps.spring.reportium.entity.DTOs.ReportFilterDTO;
+import apps.spring.reportium.entity.dto.ReportFilterDTO;
 import apps.spring.reportium.entity.enumerations.PunishmentType;
 import apps.spring.reportium.entity.enumerations.SelectedFilterSection;
-import apps.spring.reportium.entity.exceptions.AgeFilterOnNotAlivePeopleException;
-import apps.spring.reportium.repository.PersonRepository;
-import apps.spring.reportium.repository.ReportRepository;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.data.jpa.domain.Specification;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Expression;
-
-import static apps.spring.reportium.entity.enumerations.ComparisonDTOEnum.*;
 
 public class ReportFilterSpecificationBuilder {
     public static Specification<Report> build(ReportFilterDTO filter) {

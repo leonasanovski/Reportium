@@ -1,9 +1,7 @@
-package apps.spring.reportium.entity.DTOs;
+package apps.spring.reportium.entity.dto;
 
 import apps.spring.reportium.entity.enumerations.SeverityLevel;
 import lombok.Data;
-
-import java.time.LocalDate;
 
 @Data
 public class CrimeReportPerPersonDTO {

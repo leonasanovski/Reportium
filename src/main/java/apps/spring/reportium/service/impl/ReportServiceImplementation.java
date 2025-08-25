@@ -1,9 +1,8 @@
 package apps.spring.reportium.service.impl;
 
-import apps.spring.reportium.entity.DTOs.*;
+import apps.spring.reportium.entity.dto.*;
 import apps.spring.reportium.entity.Report;
 import apps.spring.reportium.entity.enumerations.PunishmentType;
-import apps.spring.reportium.entity.enumerations.ValueUnit;
 import apps.spring.reportium.repository.ReportRepository;
 import apps.spring.reportium.service.ReportService;
 import apps.spring.reportium.specifications.ReportFilterSpecificationBuilder;

@@ -724,6 +724,7 @@
                     <span class="stat-label">Most Frequent Diagnosis</span>
                     <span class="stat-value" th:text="${statistics.mostFrequentDiagnosis ?: 'N/A'}">N/A</span>
                 </div>
+
             </div>
 
             <!-- Criminal Statistics -->
@@ -738,6 +739,100 @@
                 <div class="stat-row">
                     <span class="stat-label">Resolution Ratio</span>
                     <span class="stat-value" th:text="${statistics.resolutionRatio ?: 'N/A'}">N/A</span>
+                </div>
+            </div>
+        </div>
+        <div class="stats-grid">
+            <!-- Add this section after your existing Medical Summary card -->
+            <div class="stat-card mt-4">
+                <h3 class="stat-card-title">
+                    <i class="fas fa-users-medical me-2"></i>Similar Patient Diagnoses
+                </h3>
+                <!-- Check if diagnosis_similarity list has any items -->
+                <div th:if="${diagnosis_similarities != null}">
+                    <div class="alert alert-info mb-3"
+                         style="border-left: 4px solid #17a2b8; background-color: #f8f9fa;">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Found <span th:text="${diagnosis_similarities.size()}">0</span> patient(s) with similar
+                            diagnostic patterns
+                        </small>
+                    </div>
+                    <!-- Loop through similar patients -->
+                    <div th:each="similarity : ${diagnosis_similarities}" class="similarity-item mb-3 p-3"
+                         style="border: 1px solid #e9ecef; border-radius: 8px; background-color: #fdfdfe;">
+
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="patient-info">
+                                    <h6 class="mb-1 text-primary">
+                                        <i class="fas fa-user-circle me-2"></i>
+                                        <span th:text="${similarity.fullName}">Patient Name</span>
+                                    </h6>
+                                    <small class="text-muted">Patient ID: <span
+                                            th:text="${similarity.personId}">000</span></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="match-count text-center">
+                        <span class="badge bg-success fs-6 px-3 py-2">
+                            <i class="fas fa-check-circle me-1"></i>
+                            <span th:text="${similarity.matchingDiagnosesCount}">0</span>
+                            Match<span th:if="${similarity.matchingDiagnosesCount != 1}">es</span>
+                        </span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="shared-diagnoses">
+                                    <small class="text-muted d-block mb-1">Shared Diagnoses:</small>
+                                    <div class="diagnosis-tags">
+                                            <span th:each="diagnosis : ${#strings.arraySplit(similarity.matchingLabels, ', ')}"
+                                                  class="badge bg-light text-dark me-1 mb-1"
+                                                  style="border: 1px solid #dee2e6;"
+                                                  th:text="${diagnosis}">
+                                Diagnosis
+                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr th:unless="${similarityStat.last}" class="mt-3 mb-0" style="border-color: #f1f3f4;">
+                    </div>
+
+                    <!-- Summary footer -->
+                    <div class="text-center mt-3 pt-3" style="border-top: 1px solid #f1f3f4;">
+                        <small class="text-muted">
+                            <i class="fas fa-chart-line me-1"></i>
+                            This analysis helps identify patients with similar diagnostic patterns for comparative
+                            studies
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Show when no similar patients found -->
+                <div th:if="${diagnosis_similarities == null}"
+                     class="no-similarities text-center py-4">
+
+                    <div class="mb-3">
+                        <i class="fas fa-search-minus text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+
+                    <h6 class="text-muted mb-2">No Similar Diagnostic Patterns Found</h6>
+
+                    <p class="text-muted mb-0" style="font-size: 0.9rem; line-height: 1.5;">
+                        Currently, there are no other patients in the system with matching diagnostic profiles.
+                        This could indicate a unique clinical presentation or that similar cases have not yet been
+                        documented.
+                    </p>
+
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            <em>Similar patterns may emerge as more patient data becomes available</em>
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>

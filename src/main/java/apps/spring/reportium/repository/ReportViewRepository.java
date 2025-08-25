@@ -1,11 +1,9 @@
 package apps.spring.reportium.repository;
 
-import apps.spring.reportium.entity.DTOs.ReportStatisticsPerPersonDTO;
-import apps.spring.reportium.entity.DTOs.view_fetching_dtos.*;
+import apps.spring.reportium.entity.dto.view_fetching_dtos.*;
 import apps.spring.reportium.entity.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

@@ -1,18 +1,10 @@
 package apps.spring.reportium.web;
 
-import apps.spring.reportium.entity.DTOs.MedicalReportPerPersonDTO;
-import apps.spring.reportium.entity.DTOs.ReportFilterDTO;
-import apps.spring.reportium.entity.DTOs.view_fetching_dtos.CrimeReportViewFetchingDTO;
-import apps.spring.reportium.entity.DTOs.view_fetching_dtos.MedicalReportViewFetchingDTO;
-import apps.spring.reportium.entity.FilterSession;
+import apps.spring.reportium.entity.dto.ReportFilterDTO;
 import apps.spring.reportium.entity.Report;
 import apps.spring.reportium.entity.enumerations.*;
-import apps.spring.reportium.repository.ReportViewRepository;
 import apps.spring.reportium.service.FilterSessionService;
 import apps.spring.reportium.service.ReportService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

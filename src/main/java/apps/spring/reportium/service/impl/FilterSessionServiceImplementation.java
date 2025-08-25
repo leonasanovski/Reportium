@@ -1,6 +1,6 @@
 package apps.spring.reportium.service.impl;
 
-import apps.spring.reportium.entity.DTOs.ReportFilterDTO;
+import apps.spring.reportium.entity.dto.ReportFilterDTO;
 import apps.spring.reportium.entity.FilterSession;
 import apps.spring.reportium.repository.FilterSessionRepository;
 import apps.spring.reportium.service.FilterSessionService;

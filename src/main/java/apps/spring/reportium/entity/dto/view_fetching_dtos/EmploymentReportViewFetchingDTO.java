@@ -1,6 +1,6 @@
-package apps.spring.reportium.entity.DTOs.view_fetching_dtos;
+package apps.spring.reportium.entity.dto.view_fetching_dtos;
 import lombok.Data;
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
 
 @Data

@@ -1,8 +1,8 @@
-package apps.spring.reportium.entity.DTOs;
+package apps.spring.reportium.entity.dto;
 import lombok.Data;
-import java.math.BigDecimal;
+
 import java.sql.Date;
-//fixme
+
 @Data
 public class ReportStatisticsPerPersonDTO {
     // General

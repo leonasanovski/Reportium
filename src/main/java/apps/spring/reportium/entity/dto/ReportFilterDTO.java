@@ -1,16 +1,13 @@
-package apps.spring.reportium.entity.DTOs;
+package apps.spring.reportium.entity.dto;
 
 import apps.spring.reportium.entity.converter.DoctorSpecConverter;
 import apps.spring.reportium.entity.converter.GenderConverter;
 import apps.spring.reportium.entity.converter.InstitutionTypeConverter;
 import apps.spring.reportium.entity.enumerations.*;
 import jakarta.persistence.Convert;
-import jakarta.persistence.Converter;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 
 @Data

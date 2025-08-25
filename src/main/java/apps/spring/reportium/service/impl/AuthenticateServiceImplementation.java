@@ -1,6 +1,7 @@
 package apps.spring.reportium.service.impl;
 
 import apps.spring.reportium.entity.UserProfileLog;
+import apps.spring.reportium.entity.enumerations.LogType;
 import apps.spring.reportium.repository.UserProfileLogRepository;
 import apps.spring.reportium.entity.ReportiumUser;
 import apps.spring.reportium.entity.UserProfile;
@@ -10,6 +11,7 @@ import apps.spring.reportium.entity.exceptions.UserAlreadyExistsException;
 import apps.spring.reportium.repository.ReportiumUserRepository;
 import apps.spring.reportium.repository.UserProfileRepository;
 import apps.spring.reportium.service.AuthenticationService;
+import apps.spring.reportium.service.UserLogService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,12 +26,18 @@ public class AuthenticateServiceImplementation implements AuthenticationService 
     private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserProfileLogRepository profileLogRepository;
+    private final UserLogService userProfileLogService;
 
-    public AuthenticateServiceImplementation(ReportiumUserRepository reportiumUserRepository, UserProfileRepository userProfileRepository, PasswordEncoder passwordEncoder, UserProfileLogRepository profileLogRepository) {
+    public AuthenticateServiceImplementation(ReportiumUserRepository reportiumUserRepository,
+                                             UserProfileRepository userProfileRepository,
+                                             PasswordEncoder passwordEncoder,
+                                             UserProfileLogRepository profileLogRepository,
+                                             UserLogService userProfileLogService) {
         this.reportiumUserRepository = reportiumUserRepository;
         this.userProfileRepository = userProfileRepository;
         this.passwordEncoder = passwordEncoder;
         this.profileLogRepository = profileLogRepository;
+        this.userProfileLogService = userProfileLogService;
     }
 
     @Override
@@ -52,36 +60,24 @@ public class AuthenticateServiceImplementation implements AuthenticationService 
         new_application_user.setEmail(email);
         new_application_user.setPasswordHash(passwordEncoder.encode(password));
         new_application_user.setCreatedAt(LocalDateTime.now());
+
         ReportiumUser savedUser = reportiumUserRepository.save(new_application_user);
-        //I have a trigger that creates the user profile
         UserProfile user_profile = userProfileRepository.findByReportiumUser(savedUser).get();
-        UserProfileLog userProfileLog = new UserProfileLog();
-        userProfileLog.setUserProfile(user_profile);
-        userProfileLog.setChangedAt(LocalDateTime.now());
-        String description = String.format("New user <%s %s> with mail '%s' has been registered.", savedUser.getName(), savedUser.getSurname(), savedUser.getEmail());
-        userProfileLog.setChangeDescription(description);
-        profileLogRepository.save(userProfileLog);
+
+        userProfileLogService.createLog(user_profile.getProfileId(), LogType.REGISTRATION);
     }
 
+    @Override
     public ReportiumUser login(String email, String password) {
         if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
             throw new NoExistingCredentialsException("Credentials cannot be empty.");
         }
         ReportiumUser user = reportiumUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NoExistingCredentialsException("Invalid email."));
-
         if (!passwordEncoder.matches(password, user.getPasswordHash())) {
             throw new NoExistingCredentialsException("Invalid password.");
         }
-        UserProfileLog userProfileLog = new UserProfileLog();
-        UserProfile up = userProfileRepository.findByReportiumUser(user).get();
-        userProfileLog.setUserProfile(up);
-        userProfileLog.setChangedAt(LocalDateTime.now());
-        String description = String.format("User <%s %s> with mail '%s' has logged in.", user.getName(), user.getSurname(), user.getEmail());
-        userProfileLog.setChangeDescription(description);
-        profileLogRepository.save(userProfileLog);
         return user;
-
     }
 
     @Override

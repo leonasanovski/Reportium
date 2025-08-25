@@ -40,10 +40,12 @@
             color: #fff;
             text-align: center;
         }
-        .badge-yes{
+
+        .badge-yes {
             background-color: #36c634;
         }
-        .badge-no{
+
+        .badge-no {
             background-color: #d14040;
         }
     </style>
@@ -101,6 +103,7 @@
         <thead>
         <tr>
             <th>#</th>
+            <td>PersonID</td>
             <th>Full Name</th>
             <th>Address</th>
             <th>Gender</th>
@@ -110,12 +113,14 @@
             <th>Has Academic Report</th>
             <th>Has Employment Report</th>
             <th>Has Medical Report</th>
+            <th>Delete Person</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="person, stat : ${report_summary_list}"
             th:classappend="${!person.isAlive} ? 'table-dark' : ''">
             <td th:text="${stat.count}"></td>
+            <td class="fw-bolder text-success" th:text="${person.personId}"></td>
             <td>
                 <a th:href="@{/{id}(id=${person.getPersonId()})}"
                    class="text-decoration-none text-primary fw-semibold">
@@ -144,6 +149,12 @@
             <td>
     <span class="badge" th:classappend="${person.hasMedicalReport} ? 'badge-yes' : 'badge-no'"
           th:text="${person.hasMedicalReport} ? 'Yes' : 'No'"></span>
+            </td>
+            <td>
+                <form th:action="@{/{id}/delete(id=${person.getPersonId()})}" method="post"
+                      class="text-decoration-none text-primary fw-semibold">
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         </tbody>

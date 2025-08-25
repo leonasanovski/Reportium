@@ -1,11 +1,12 @@
 package apps.spring.reportium.repository;
 
-import apps.spring.reportium.entity.DTOs.*;
+import apps.spring.reportium.entity.dto.*;
 import apps.spring.reportium.entity.Report;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -154,9 +155,42 @@ public interface ReportRepository extends JpaRepository<Report, Long>, JpaSpecif
             """, nativeQuery = true)
     ReportStatisticsPerPersonDTO getStatisticsForPerson(@Param("person_id") Long person_id);
 
+    @Query(value = """
+            with selected_person_diagnosis as(
+                select distinct d.diagnosis_id as diagnosis_id, d.short_description as label
+                from person p
+                         join report r on r.person_id = p.person_id
+                         join medicalreport_diagnosis mrd on mrd.report_id = r.report_id
+                         join diagnosis d on mrd.diagnosis_id = d.diagnosis_id
+                where p.person_id = :person_id
+            )
+            select cast(p2.person_id as bigint),
+                 p2.name || ' ' || p2.surname as full_name,
+                 cast(count(distinct spd.diagnosis_id) as bigint) as matching_diagnoses_count,
+                 string_agg(distinct spd.label, ', ') as matching_labels
+            from selected_person_diagnosis spd
+                     join medicalreport_diagnosis mrd2 on mrd2.diagnosis_id = spd.diagnosis_id
+                     join report r2 on r2.report_id = mrd2.report_id
+                     join person p2 on p2.person_id = r2.person_id
+            where p2.person_id != :person_id
+            group by p2.person_id, p2.name, p2.surname
+            having count(distinct spd.diagnosis_id) >=1
+            order by matching_diagnoses_count desc;
+            """, nativeQuery = true)
+    List<DiagnosisSimilarityPerPersonDTO> getSimilarDiagnosesForPerson(@Param("person_id") Long person_id);
+
     Page<Report> findAll(Pageable pageable);
 
     Page<Report> findAllByReportId(Integer reportId, Pageable pageable);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = """ 
+            UPDATE Report r
+            SET r.person.personId = :stub_person_id
+            WHERE r.person.personId = :target_to_delete_person_id
+            """)
+    int reassignReportsToStub(@Param("target_to_delete_person_id") Long targetId,
+                              @Param("stub_person_id") Long stubId);
 
 }
 

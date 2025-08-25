@@ -12,4 +12,6 @@ import java.util.Optional;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Integer> {
     Optional<UserProfile> findByReportiumUser(ReportiumUser reportiumUser);
+
+    UserProfile findByReportiumUserUserId(int reportiumUserUserId);
 }

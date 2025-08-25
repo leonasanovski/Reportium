@@ -1,4 +1,4 @@
-package apps.spring.reportium.entity.DTOs;
+package apps.spring.reportium.entity.dto;
 
 import apps.spring.reportium.entity.enumerations.DoctorSpecialization;
 import apps.spring.reportium.entity.enumerations.SeverityLevel;
