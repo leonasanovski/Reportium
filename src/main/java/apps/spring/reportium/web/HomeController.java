@@ -3,6 +3,7 @@ package apps.spring.reportium.web;
 import apps.spring.reportium.entity.*;
 import apps.spring.reportium.entity.dto.*;
 import apps.spring.reportium.entity.exceptions.PersonNotFoundException;
+import apps.spring.reportium.repository.InstitutionRepository;
 import apps.spring.reportium.repository.ReportRepository;
 import apps.spring.reportium.service.PersonService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +18,12 @@ import java.util.List;
 public class HomeController {
     private final PersonService personService;
     private final ReportRepository reportRepository;
+    private final InstitutionRepository institutionRepository;
 
-    public HomeController(PersonService personService, ReportRepository reportRepository) {
+    public HomeController(PersonService personService, ReportRepository reportRepository, InstitutionRepository institutionRepository) {
         this.personService = personService;
         this.reportRepository = reportRepository;
+        this.institutionRepository = institutionRepository;
     }
 
     @GetMapping
@@ -49,6 +52,7 @@ public class HomeController {
         List<EmploymentReportPerPersonDTO> person_er = reportRepository.getEmploymentReportsByPersonId(personId);
         ReportStatisticsPerPersonDTO statistics_per_person = reportRepository.getStatisticsForPerson(personId);
         List<DiagnosisSimilarityPerPersonDTO> diagnosis_similarity = reportRepository.getSimilarDiagnosesForPerson(personId);
+        List<InstitutionTotalReportsDTO> top3_institutions = institutionRepository.findTop3Institutions();
         model.addAttribute("medical_reports", person_mr);
         model.addAttribute("criminal_reports", person_cr);
         model.addAttribute("academic_reports", person_ar);
@@ -56,6 +60,7 @@ public class HomeController {
         model.addAttribute("statistics", statistics_per_person);
         model.addAttribute("diagnosis_similarities", diagnosis_similarity);
         model.addAttribute("person", person);
+        model.addAttribute("institutions",top3_institutions);
         return "person_reports";
     }
 }
