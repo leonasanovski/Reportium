@@ -7,6 +7,7 @@ import apps.spring.reportium.repository.CrimeTypeRepository;
 import apps.spring.reportium.repository.DiagnosisRepository;
 import apps.spring.reportium.repository.DoctorRepository;
 import apps.spring.reportium.repository.InstitutionRepository;
+import apps.spring.reportium.service.InstitutionService;
 import apps.spring.reportium.service.PersonService;
 import apps.spring.reportium.service.ReportService;
 import org.springframework.data.domain.Page;
@@ -24,14 +25,16 @@ public class ReportsController {
     private final ReportService reportService;
     private final PersonService personService;
     private final InstitutionRepository institutionRepository;
+    private final InstitutionService institutionService;
     private final CrimeTypeRepository crimeTypeRepository;
     private final DoctorRepository doctorRepository;
     private final DiagnosisRepository diagnosisRepository;
 
-    public ReportsController(ReportService reportService, PersonService personService, InstitutionRepository institutionRepository, CrimeTypeRepository crimeTypeRepository, DoctorRepository doctorRepository, DiagnosisRepository diagnosisRepository) {
+    public ReportsController(ReportService reportService, PersonService personService, InstitutionRepository institutionRepository, InstitutionService institutionService, CrimeTypeRepository crimeTypeRepository, DoctorRepository doctorRepository, DiagnosisRepository diagnosisRepository) {
         this.reportService = reportService;
         this.personService = personService;
         this.institutionRepository = institutionRepository;
+        this.institutionService = institutionService;
         this.crimeTypeRepository = crimeTypeRepository;
         this.doctorRepository = doctorRepository;
         this.diagnosisRepository = diagnosisRepository;
@@ -78,7 +81,7 @@ public class ReportsController {
     public String createAcademicReport(@RequestParam Long personId, Model model) {
         Person person = personService.findById(personId.intValue());
         model.addAttribute("person", person);
-        model.addAttribute("institutions", institutionRepository.findAll());
+        model.addAttribute("institutions", institutionService.getSuitableInstitutions(person));
         return "new_academic_report";
     }
 
@@ -122,12 +125,13 @@ public class ReportsController {
         model.addAttribute("diagnoses", diagnosisRepository.findAll());
         return "new_medical_report";
     }
+
     @PostMapping("/add/medical")
     public String submitMedicalData(@RequestParam Long personId,
-                                     @RequestParam String summary,
-                                     @RequestParam Long doctorId,
-                                     @RequestParam (required = false) LocalDate nextControlDate,
-                                     @RequestParam (required = false) List<Long> diagnosisIds) {
+                                    @RequestParam String summary,
+                                    @RequestParam Long doctorId,
+                                    @RequestParam(required = false) LocalDate nextControlDate,
+                                    @RequestParam(required = false) List<Long> diagnosisIds) {
         reportService.saveNewMedicalReport(personId, summary, doctorId, nextControlDate, diagnosisIds);
         return "redirect:/" + personId;
     }
